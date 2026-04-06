@@ -1,0 +1,264 @@
+
+
+نماط العناصر الثابتة (للاستخدام في الصفحات الأخرى)
+
+عند تصميم صفحة ApplyForm أو Dashboard مستقبلاً، استخدم هذه الـ Classes:
+
+    للعناوين الرئيسية: text-white text-4xl font-black uppercase tracking-tight
+
+    للعناوين الفرعية (الذهبية): text-accent-gold text-sm font-bold tracking-[0.4em] uppercase
+
+    للأزرار الأساسية (CTA): bg-accent-gold text-primary font-black tracking-widest uppercase py-4 px-8 rounded-lg hover:bg-white transition-all
+
+    للحقول (Inputs): w-full bg-white/5 border border-white/10 rounded-lg text-white p-4 focus:border-accent-gold outline-none
+
+    في بيئة الإنتاج (Production): يجب أن تضبط APP_DEBUG=false. في هذه الحالة، حتى لو حدث خطأ، لن يرى المستثمر إلا صفحة جميلة مكتوب عليها "حدث خطأ غير متوقع" (500 Error Page)، ولن يعرف أسرار كودك!
+
+    ثالثاً: مقترحات لصلاحيات إضافية للأدمن
+
+يا كنان، لكي يكون الموقع "سيادياً" واحترافياً، اقترح عليك إضافة هذه الصلاحيات مستقبلاً في الـ Migration والواجهة:
+
+    صلاحية الحذف (Can Delete): هل تسمح للوسيط بحذف طلب؟ (يفضل جعلها للأدمن فقط لحماية البيانات).
+
+    صلاحية تصدير البيانات (Export to Excel/PDF): هذه ميزة خطيرة، يجب ألا تتاح إلا لمن تثق به لكي لا يتم "سرقة" قائمة المستثمرين.
+
+    صلاحية رؤية الأرقام (View Phone Numbers): يمكنك جعل الوسيط يرى بيانات العقار، لكن لا يرى "رقم هاتف" العميل إلا إذا وافق الأدمن، لضمان أن كل الصفقات تمر عبر المنصة.
+
+    تحديد المنطقة (Region Access): إذا توسعت، يمكنك إعطاء وسيط صلاحية رؤية "عقارات حلب" فقط، وآخر "عقارات دمشق".
+
+    صلاحية رفع الفيديوهات (Media Manager): من يحق له رفع وتعديل الميديا الثقيلة على السيرفر.
+
+    $u = App\Models\User::where('email', 'kinanabuasi.ka@gmail.com')->first();
+
+    
+php artisan tinker
+
+$u = App\Models\User::where('email', 'kinanabuasi.ka@gmail.com')->first();
+
+$u->role = 'admin';
+
+$u->save();
+
+
+بالعودة إلى تسجيل دخول الأدمن، عند محاولة تسجيل الدخول يظهر:
+
+Uncaught (in promise) ReferenceError: auth is not defined
+
+    <anonymous> BDashboard.jsx:491
+
+ auth.isAdmin && (        <div className="mt-16 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-8 shadow-2xl">      
+
+بالرغم من أنه دخل قبل قليل بشكل نظامي!
+
+class LoginController extends Controller
+
+{public function login(Request $request){
+
+
+
+
+    $request->validate([
+
+        'login_id' => 'required', 
+
+        'password' => 'required',
+
+    ]);
+    $loginValue = $request->login_id;
+    $fieldType = filter_var($loginValue, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+    if (Auth::attempt([$fieldType => $loginValue, 'password' => $request->password])) {
+        $user = Auth::user();
+        if (in_array($user->role, ['broker', 'admin'])) {
+            $request->session()->regenerate();
+            return redirect()->intended(route('broker.dashboard'));
+        }
+        Auth::logout();
+        return back()->withErrors(['login_id' => 'عذراً، هذه المنطقة مخصصة للإدارة فقط.']);    }
+    return back()->withErrors(['login_id' => 'بيانات الدخول غير صحيحة.']);}}
+
+.......
+class AuthenticatedSessionController extends Controller
+{public function create(): Response
+    {        return Inertia::render('Auth/Login', [
+
+            'canResetPassword' => Route::has('password.request'),
+
+            'status' => session('status'),   ]); }
+
+    public function store(LoginRequest $request): RedirectResponse
+{
+
+    $request->authenticate();
+    $request->session()->regenerate();
+    session()->forget('url.intended');
+    $user = Auth::user();
+    return redirect()->to('/bdashboard');}
+
+    public function destroy(Request $request): RedirectResponse
+    {        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/');   }
+}
+
+......
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/bdashboard', [DashboardController::class, 'index'])->name('broker.dashboard');
+    Route::post('/bdashboard/status/{id}/{type}', [DashboardController::class, 'updateStatus'])->name('bdashboard.updateStatus');
+    Route::post('/admin/update-permissions/{user}', [DashboardController::class, 'updatePermissions'])->name('admin.updatePermissions');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::put('password', [ProfileController::class, 'updatePassword'])->name('password.update');
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+    Route::get('/properties/create', [PropertyController::class, 'create'])->name('property.create');
+    Route::post('/properties', [PropertyController::class, 'store'])->name('property.store');
+}
+
+.......
+class HandleInertiaRequests extends Middleware
+{
+    protected $rootView = 'app';
+    public function version(Request $request): ?string
+    {
+
+        return parent::version($request);
+
+    }
+
+
+    public function share(Request $request): array
+
+    {        return array_merge(parent::share($request), [
+
+            // المحرك الأساسي: إرسال بيانات المستخدم المسجل
+
+            'auth' => [
+
+                'user' => $request->user() ? [
+
+                    'id' => $request->user()->id,
+
+                    'name' => $request->user()->name,
+
+                    'email' => $request->user()->email,
+
+                    // نستخدم ->value لأن الدور Enum
+
+                    'role' => $request->user()->role->value,
+
+                ] : null, // إذا لم يكن هناك مستخدم، نرسل null ببساطة
+
+            ],
+
+            // نظام التنبيهات (Flash Messages)
+
+            'flash' => [
+
+                'success' => fn () => $request->session()->get('success'),
+
+                'error' => fn () => $request->session()->get('error'),
+
+            ],
+
+
+            // البيانات المؤقتة التي أضفتها أنت سابقاً
+
+            'temp_lead_data' => fn () => $request->session()->get('temp_lead_data'),
+
+
+            // إرسال روابط Ziggy لكي يعمل تابع route() داخل React
+
+            'ziggy' => fn () => [
+
+                ...(new Ziggy)->toArray(),
+
+                'location' => $request->url(),
+
+            ],
+
+        ]);
+
+    }
+
+}
+
+class RedirectIfAuthenticated
+{
+   
+    public function handle(Request $request, Closure $next, string ...$guards): Response
+    {
+        $guards = empty($guards) ? [null] : $guards;
+
+        foreach ($guards as $guard) {
+            if (Auth::guard($guard)->check()) {
+                $user = Auth::user();
+
+                // نستخدم redirect()->to() لضمان الانتقال للرابط الحقيقي فوراً
+                if ($user->role === 'broker') {
+                    return redirect()->to('/broker-dashboard');
+                }
+
+                return redirect()->to('/investor-dashboard');
+            }
+        }
+
+        return $next($request);
+    }
+}
+
+ {/* {auth.isAdmin && ( */}
+                    // <div className="mt-16 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-8 shadow-2xl">
+                    //     <div className="flex items-center justify-between mb-8">
+                    //         <div>
+                    //             <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter">
+                    //                 Team{" "}
+                    //                 <span className="text-accent-gold">
+                    //                     Control
+                    //                 </span>{" "}
+                    //                 Center
+                    //             </h2>
+                    //             <p className="text-white/40 text-sm mt-1">
+                    //                 إدارة صلاحيات الوصول والوسطاء في المنصة
+                    //             </p>
+                    //         </div>
+                    //         <div className="bg-accent-gold/10 px-4 py-2 rounded-full border border-accent-gold/20">
+                    //             <span className="text-accent-gold font-bold text-xs">
+                    //                 ADMIN MODE
+                    //             </span>
+                    //         </div>
+                    //     </div>
+
+                    //     <div className="overflow-x-auto">
+                    //         <table className="w-full text-right border-separate border-spacing-y-3">
+                    //             <thead>
+                    //                 <tr className="text-accent-gold/50 text-[10px] font-black uppercase tracking-[0.2em]">
+                    //                     <th className="px-6 py-4">الوسيط</th>
+                    //                     <th className="px-6 py-4 text-center">
+                    //                         عروض البائعين
+                    //                     </th>
+                    //                     <th className="px-6 py-4 text-center">
+                    //                         طلبات المستثمرين
+                    //                     </th>
+                    //                     <th className="px-6 py-4 text-center">
+                    //                         طلبات الزبائن
+                    //                     </th>
+                    //                     <th className="px-6 py-4 text-center">
+                    //                         الإجراء
+                    //                     </th>
+                    //                 </tr>
+                    //             </thead>
+                    //             <tbody>
+                    //                 {all_brokers &&
+                    //                     all_brokers.map((broker) => (
+                    //                         <BrokerRow
+                    //                             key={broker.id}
+                    //                             broker={broker}
+                    //                         />
+                    //                     ))}
+                    //             </tbody>
+                    //         </table>
+                    //     </div>
+                    // </div>
+                // )}
