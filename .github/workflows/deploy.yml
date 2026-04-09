@@ -11,8 +11,8 @@ jobs:
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
+          host: 72.62.44.103
+          username: srv1552788.hstgr.cloud
           key: ${{ secrets.SSH_PRIVATE_KEY }} # تأكد أن هذا الاسم مطابق للـ Secret
           port: 22
           script: |
