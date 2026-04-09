@@ -11,9 +11,10 @@ jobs:
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@master
         with:
-          host: 72.62.44.103
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }} # سنضع هذا المفتاح في إعدادات GitHub للأمان
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }} # تأكد أن هذا الاسم مطابق للـ Secret
+          port: 22
           script: |
             cd /opt/apps/Sovereign_Capital
             git pull origin main
