@@ -115,7 +115,7 @@ export default function MainLayout({ children }) {
                             />
                             SOVEREIGN CAPITAL
                         </div>
-                        <p className="text-slate-500 text-sm max-w-xs">
+                        <p className="text-slate-500 text-sm max-w-xs relative z-10 p-5">
                             نكرس جهودنا لربط رأس المال العالمي بالفرص
                             الاستراتيجية الفاخرة.
                         </p>

@@ -24,6 +24,7 @@ class CustomerPageController extends Controller
             'governorate' => 'required',
             'property_type' => 'required', // يجب أن يكون من ضمن الـ enum
             'other_property_type' => 'nullable|string', // الحقل الديناميكي
+            'additional_details' => 'nullable|string',
             'preferred_location' => 'required',
             'required_area' => 'required',
         ]);
@@ -31,10 +32,10 @@ class CustomerPageController extends Controller
             $validated['property_type'] = $validated['other_property_type'];
         }
         // else {
-        $validated['phone'] = $validated['country_code'] . $validated['phone'];
-    
-    // إزالة country_code لأنه غير موجود في جدول قاعدة البيانات
-    unset($validated['country_code']);
+        $validated['phone'] = $validated['country_code'].$validated['phone'];
+
+        // إزالة country_code لأنه غير موجود في جدول قاعدة البيانات
+        unset($validated['country_code']);
 
         unset($validated['other_property_type']);
         // }

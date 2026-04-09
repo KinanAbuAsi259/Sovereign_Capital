@@ -190,7 +190,7 @@ export default function Customer_page() {
 
                             <div className="space-y-2">
                                 <label className="text-slate-300 text-sm mr-2 font-bold">
-                                    الموقع المفضل *
+                                    الموقع *
                                 </label>
                                 <input
                                     className="w-full bg-white/5 border border-white/10 rounded-xl text-white p-4 focus:border-accent-gold outline-none"

@@ -137,18 +137,20 @@ export default function Login() {
                         {processing ? "جاري التحقق..." : "تسجيل الدخول"}
                     </button>
 
-                    <div className="text-center mt-6">
-                        <p className="text-slate-400 text-sm">
-                            ليس لديك حساب؟{" "}
-                            <Link
-                                href={route("register")}
-                                className="text-accent-gold font-bold hover:underline"
-                            >
-                                أنشئ حسابك الآن
-                            </Link>
-                        </p>
-                    </div>
+                    
                 </form>
+                 {/* زر العودة الذكي */}
+                <div className="mt-8 text-center">
+                    <Link
+                        href="/"
+                        className="w-full bg-accent text-[#0b1c2d] font-black py-4 rounded-2xl transition-all duration-300 uppercase tracking-widest text-sm shadow-xl hover:opacity-90 disabled:opacity-70 justify-center gap-3 inline-flex items-center"
+                    >
+                        <span className="material-symbols-outlined text-sm">
+                            arrow_forward
+                        </span>
+                        العودة للقائمة الرئيسية
+                    </Link>
+                </div>
             </div>
         </div>
     );

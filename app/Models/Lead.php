@@ -14,7 +14,7 @@ class Lead extends Model
     // هذه المصفوفة ضرورية جداً لحفظ البيانات
     // app/Models/Lead.php
     protected $fillable = [
-        'name', 'phone', 'email', 'governorate',
+        'name', 'phone', 'email', 'governorate', 'currency',
         'capital_range', 'property_type', 'company_name',
         'location', 'area', 'investment_goal', 'status',
     ];

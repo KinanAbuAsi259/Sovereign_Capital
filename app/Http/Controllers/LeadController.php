@@ -24,6 +24,7 @@ class LeadController extends Controller
             'country_code' => 'required|string',
             'email' => 'nullable|email',
             'governorate' => 'required|string',
+           'currency' => 'required|in:سوري,دولار', // الحقل الجديد
             'capital_range' => 'nullable|string',
             'property_type' => 'required|string',
             'location' => 'required|string',
@@ -45,7 +46,41 @@ class LeadController extends Controller
             ['phone' => $validated['phone'], 'status' => 'لم يتم التواصل'],
             array_merge($validated, ['status' => 'لم يتم التواصل'])
         );
+    //     if ($request->has('uploaded_media_paths')) {
+    //     foreach ($request->uploaded_media_paths as $tempPath) {
+    //         $newPath = str_replace('temp_uploads', 'owner_assets/' . $lead->id, $tempPath);
+    //         Storage::disk('public')->move($tempPath, $newPath);
+            
+    //         // تسجيل الملف في قاعدة البيانات (جدول الميديا الخاص بك)
+    //         $lead->media()->create(['path' => $newPath]);
+    //     }
+    // }
 
         return redirect()->route('landing');
     }
+    public function uploadTemp(Request $request)
+{
+    // 1. التحقق من الملفات
+    $request->validate([
+        'media.*' => 'required|file|max:102400', // حد أقصى 100 ميجا للملف
+    ]);
+
+    $paths = [];
+
+    if ($request->hasFile('media')) {
+        foreach ($request->file('media') as $file) {
+            // 2. تخزين الملف في مجلد مؤقت داخل الـ public storage
+            // نستخدم 'public' لكي نستطيع توليد رابط للمعاينة فوراً
+            $path = $file->store('temp_uploads', 'public');
+            $paths[] = [
+                'name' => $file->getClientOriginalName(),
+                'path' => $path,
+                'url'  => asset('storage/' . $path) // رابط المعاينة
+            ];
+        }
+    }
+
+    // 3. إعادة المسارات لـ React
+    return response()->json(['files' => $paths]);
+}
 }

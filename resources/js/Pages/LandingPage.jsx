@@ -45,10 +45,10 @@ export default function LandingPage() {
 <div className="md:col-span-4 flex justify-center md:justify-end">
     <Link
         href="/"
-        className="group transition-transform duration-500 hover:scale-110 block relative z-10 p-3"
+        className="group transition-transform duration-500 hover:scale-110 block relative z-10 p-0.15"
         // ❌ حذفنا الـ transform اليدوي الثابت هنا لضمان التوسط
     >
-        <div className="relative p-2 flex justify-center">
+        <div className="relative p-0.21 flex justify-center">
             <div className="absolute inset-0 bg-accent-gold opacity-10 blur-3xl rounded-full scale-150"></div>
             <img
                 src="/assets/logo.png"

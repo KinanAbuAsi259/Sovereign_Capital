@@ -58,23 +58,48 @@ class OwnerPageController extends Controller
             array_merge($validated, ['status' => 'لم يتم التواصل'])
         );
         // 2. معالجة الملفات المرفوعة (صور وفيديوهات)
-        if ($request->hasFile('media')) {
-            foreach ($request->file('media') as $file) {
-                $path = $file->store('owner_assets', 'public'); // حفظ في storage/app/public/owner_assets
+        // if ($request->hasFile('media')) {
+        //     foreach ($request->file('media') as $file) {
+        //         $path = $file->store('owner_assets', 'public'); // حفظ في storage/app/public/owner_assets
 
-                // تحديد النوع بناءً على الامتداد
-                $extension = $file->getClientOriginalExtension();
-                $type = in_array($extension, ['mp4', 'mov']) ? 'video' : 'image';
+        //         // تحديد النوع بناءً على الامتداد
+        //         $extension = $file->getClientOriginalExtension();
+        //         $type = in_array($extension, ['mp4', 'mov']) ? 'video' : 'image';
 
-                OwnerRequestMedia::create([
-                    'owner_request_id' => $ownerRequest->id,
-                    'file_path' => $path,
-                    'file_type' => $type,
-                ]);
-            }
+        //         OwnerRequestMedia::create([
+        //             'owner_request_id' => $ownerRequest->id,
+        //             'file_path' => $path,
+        //             'file_type' => $type,
+        //         ]);
+        //     }
+        // }
+        // داخل دالة store في OwnerPageController
+if ($request->has('uploaded_media_paths')) {
+    foreach ($request->uploaded_media_paths as $tempPath) {
+        // tempPath يكون مثلاً: temp_uploads/xyz.jpg
+        $fileName = basename($tempPath);
+        $newPath = "owner_assets/" . $ownerRequest->id . "/" . $fileName;
+
+        // التأكد من وجود الملف في مجلد temp ونقله
+        if (Storage::disk('public')->exists($tempPath)) {
+            Storage::disk('public')->move($tempPath, $newPath);
+
+            OwnerRequestMedia::create([
+                'owner_request_id' => $ownerRequest->id,
+                'file_path' => $newPath, // نستخدم الاسم الصحيح هنا
+                'file_type' => $this->getFileType($fileName),
+            ]);
         }
+    }
+}
 
         // 5. العودة مع رسالة نجاح
         return redirect()->route('landing');
     }
+    private function getFileType($fileName)
+{
+    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $videoExtensions = ['mp4', 'mov', 'avi', 'wmv'];
+    return in_array($extension, $videoExtensions) ? 'video' : 'image';
+}
 }

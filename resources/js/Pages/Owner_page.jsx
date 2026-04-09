@@ -2,6 +2,9 @@ import React from "react";
 import { Head, useForm, Link } from "@inertiajs/react";
 import toast, { Toaster } from "react-hot-toast";
 import MainLayout from "@/Layouts/MainLayout";
+import axios from "axios";
+import { useState } from "react";
+axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
 export default function Owner_page() {
     // 1. إعداد النموذج وربط الحقول (نفس الحقول في الـ Controller)
@@ -19,19 +22,53 @@ export default function Owner_page() {
             additional_details: "",
             media: [],
         });
-    const handleFileChange = (e) => {
+    const [uploading, setUploading] = useState(false);
+    // القيمة أولاً ثم الدالة
+    const [uploadProgress, setUploadProgress] = useState(0);
+
+    const handleFileChange = async (e) => {
         const files = Array.from(e.target.files);
-        const maxSize = 100 * 1024 * 1024; // 100MB
+        if (files.length === 0) return;
 
-        const oversizedFiles = files.filter((file) => file.size > maxSize);
-
-        if (oversizedFiles.length > 0) {
-            alert("عذراً، أحد الملفات يتجاوز حجم 100 ميجابايت!");
-            e.target.value = ""; // تفريغ الاختيار
+        // 1. فحص الحجم
+        const maxSize = 100 * 1024 * 1024;
+        if (files.some((f) => f.size > maxSize)) {
+            alert("عذراً، أحد الملفات يتجاوز 100 ميجابايت!");
             return;
         }
 
-        setData("media", files);
+        // 2. بدء الرفع الفوري
+        setUploading(true);
+        setUploadProgress(0);
+
+        const formData = new FormData();
+        files.forEach((file) => formData.append("media[]", file));
+
+        try {
+            const response = await axios.post("/upload-temp", formData, {
+                onUploadProgress: (progressEvent) => {
+                    const percentCompleted = Math.round(
+                        (progressEvent.loaded * 100) / progressEvent.total,
+                    );
+                    // setData(
+                    //     "uploaded_media_paths",
+                    //     response.data.files.map((f) => f.path),
+                    // );
+                    setUploadProgress(percentCompleted);
+                },
+            });
+
+            // تخزين المسارات المؤقتة في النموذج لإرسالها عند الضغط على "إرسال الطلب"
+            setData(
+                "uploaded_media_paths",
+                response.data.files.map((f) => f.path),
+            );
+            setUploading(false);
+        } catch (error) {
+            console.error("Upload error:", error);
+            alert("فشل الرفع، يرجى المحاولة مرة أخرى");
+            setUploading(false);
+        }
     };
 
     // قائمة الدول (نفس القائمة لتوحيد التجربة)
@@ -329,16 +366,16 @@ export default function Owner_page() {
                                         جاهزة للرفع
                                     </p>
                                 )}
-                                {progress && (
+                                {uploading && (
                                     <div className="w-full bg-white/10 rounded-full h-2 mt-4">
                                         <div
                                             className="bg-accent-gold h-2 rounded-full transition-all"
                                             style={{
-                                                width: `${progress.percentage}%`,
+                                                width: `${uploadProgress}%`,
                                             }}
                                         ></div>
                                         <p className="text-white text-[10px] mt-1 text-center font-bold">
-                                            جاري الرفع: {progress.percentage}%
+                                            جاري الرفع الفوري: {uploadProgress}%
                                         </p>
                                     </div>
                                 )}
@@ -347,12 +384,14 @@ export default function Owner_page() {
 
                         <button
                             type="submit"
-                            disabled={processing}
-                            className="w-full bg-accent text-[#0b1c2d] font-black py-5 rounded-2xl transition-all duration-300 uppercase tracking-widest text-sm shadow-xl hover:opacity-90 disabled:opacity-70"
+                            disabled={processing || uploading} // تعطيل الزر أثناء الرفع الفوري
+                            className="w-full bg-accent text-[#0b1c2d] font-black py-4 rounded-2xl transition-all duration-300 uppercase tracking-widest text-sm shadow-xl hover:opacity-90 disabled:opacity-70 justify-center gap-3 inline-flex items-center"
                         >
-                            {processing
-                                ? "جاري معالجة العرض..."
-                                : "إرسال عرض البيع الآن"}
+                            {uploading
+                                ? "جاري رفع الملفات..."
+                                : processing
+                                  ? "جاري الحفظ..."
+                                  : "إرسال الطلب"}
                         </button>
                     </form>
                 </div>

@@ -47,6 +47,7 @@ Route::post('/update-status/{id}/{type}', [DashboardController::class, 'updateSt
 
 Route::post('/investor-page', [LeadController::class, 'store'])->name('lead.store');
 Route::get('/investor-page', [LeadController::class, 'index'])->name('investor.page');
+Route::post('/upload-temp', [LeadController::class, 'uploadTemp'])->name('upload.temp');
 // [2] مسارات الضيوف فقط (الذين لم يسجلوا دخولهم)
 
 Route::middleware('guest')->group(function () {

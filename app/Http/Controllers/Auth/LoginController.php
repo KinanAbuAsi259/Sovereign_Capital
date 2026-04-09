@@ -18,7 +18,8 @@ class LoginController extends Controller
     $loginValue = $request->login_id;
     $fieldType = filter_var($loginValue, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
 
-    if (Auth::attempt([$fieldType => $loginValue, 'password' => $request->password])) {
+    if (Auth::attempt(['email' => $email, 'password' => $password], $remember = true)) {
+    
         $user = Auth::user();
 
         // ⭕️ القفل الأمني الذكي
