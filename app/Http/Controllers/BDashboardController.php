@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+// namespace App\Http\Controllers;
 
-use App\Models\CustomerRequest;
-use App\Models\InvestorRequest;
-use App\Models\OwnerRequest;
-use Inertia\Inertia;
-use Illuminate\Http\Request;
+// use App\Models\CustomerRequest;
+// use App\Models\InvestorRequest;
+// use App\Models\OwnerRequest;
+// use Inertia\Inertia;
+// use Illuminate\Http\Request;
 
 // class BDashboardController extends Controller
 // {

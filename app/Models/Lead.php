@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Lead extends Model
 {
+    // لا نحتاج لـ Accessors هنا لأن الأسماء مطابقة، لكن سنضيف $appends للتوحيد
+    // protected $appends = ['area', 'location'];
+
     // داخل الكلاس
     protected $attributes = [
         'status' => 'لم يتم التواصل',
@@ -15,7 +18,7 @@ class Lead extends Model
     // app/Models/Lead.php
     protected $fillable = [
         'name', 'phone', 'email', 'governorate', 'currency',
-        'capital_range', 'property_type', 'company_name',
+        'capital_range', 'property_type', 'company_name', 'admin_notes',
         'location', 'area', 'investment_goal', 'status',
     ];
 }

@@ -45,8 +45,9 @@ export default function BrokerDashboard({
 📞 الهاتف: ${item.phone}
 📍 المحافظة: ${item.governorate}
 🏠 النوع: ${item.property_type || "غير محدد"}
-📏 المساحة/الميزانية: ${item.area || item.capital_range || "غير محدد"}
-🗺️ الموقع: ${item.location}
+📏 المساحة: ${item.required_area}
+📏 الميزانية: ${item.capital_range || "غير محدد"}
+🗺️ الموقع: ${item.preferred_location}
 💬 التفاصيل/الهدف: ${details}
 📊 الحالة: ${item.status}
 -------------------------------
@@ -249,14 +250,31 @@ export default function BrokerDashboard({
                                         <p>
                                             <span className="text-[#d4af37] font-bold ml-2">
                                                 الموقع:
-                                            </span>{" "}
-                                            {item.location}
+                                            </span>
+                                            <span className="text-white">
+                                                {item.location ||
+                                                    item.preferred_location ||
+                                                    "غير محدد"}
+                                            </span>
+                                        </p>
+
+                                        <p className="notranslate">
+                                            <span className="text-[#d4af37] font-bold ml-2">
+                                                المساحة:
+                                            </span>
+                                            <span className="text-white">
+                                                {item.area ||
+                                                    item.required_area ||
+                                                    "غير محدد"}
+                                            </span>
                                         </p>
                                         <p>
-                                            <span className="text-[#d4af37] font-bold ml-2">
-                                                المساحة/الميزانية:
+                                            <span className="text-[#d4af37] font-bold">
+                                                الميزانية:
                                             </span>{" "}
-                                            {item.area || item.capital_range}
+                                            <span className="text-white">
+                                                {item.capital_range}
+                                            </span>
                                         </p>
                                         <p>
                                             <span className="text-[#d4af37] font-bold ml-2">
@@ -326,7 +344,8 @@ export default function BrokerDashboard({
                                             )}
                                             {activeTab === "customers" && (
                                                 <th className="p-6 border-b border-black/5">
-                                                    طلب الزبون / الموقع
+                                                    طلب الزبون / الموقع /
+                                                    المساحة
                                                 </th>
                                             )}
                                             <th className="p-6 border-b border-black/5 text-center">

@@ -9,6 +9,8 @@ class OwnerRequest extends Model
 {
     use HasFactory;
 
+    // protected $appends = ['area', 'location'];
+
     // داخل الكلاس
     protected $attributes = [
         'status' => 'لم يتم التواصل',
@@ -17,7 +19,7 @@ class OwnerRequest extends Model
     // تحديد الحقول المسموح بحفظها لضمان عدم حدوث MassAssignmentException
     protected $fillable = [
         'name', 'phone', 'country_code', 'governorate',
-        'property_type', 'location', 'area',
+        'property_type', 'location', 'area', 'admin_notes',
         'email', 'additional_details', 'status',
     ];
 
@@ -25,4 +27,9 @@ class OwnerRequest extends Model
     {
         return $this->hasMany(OwnerRequestMedia::class, 'owner_request_id');
     }
+
+    // public function getAreaAttribute($value)
+    // {
+    //     return $value ? $value.' م²' : 'غير محدد';
+    // }
 }

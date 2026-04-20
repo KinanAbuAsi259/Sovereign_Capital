@@ -17,24 +17,35 @@ class RedirectIfAuthenticated
     // app/Http/Middleware/RedirectIfAuthenticated.php
     // app/Http/Middleware/RedirectIfAuthenticated.php
     public function handle(Request $request, Closure $next, string ...$guards): Response
-{
-    $guards = empty($guards) ? [null] : $guards;
+    {
+        $guards = empty($guards) ? [null] : $guards;
 
-    foreach ($guards as $guard) {
-        if (Auth::guard($guard)->check()) {
-            $user = Auth::guard($guard)->user();
+        foreach ($guards as $guard) {
+            if (Auth::guard($guard)->check()) {
+                $role = Auth::user()->role;
+                if ($role === 'admin') {
+                    return redirect('/admin/dashboard');
+                }
 
-            // توجيه حسب الرتبة حتى لو كان مسجلاً دخولاً مسبقاً
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard');
+                return redirect('/broker/dashboard');
             }
-            
-            return redirect()->route('broker.dashboard');
-        }
-    }
+            // if (Auth::guard($guard)->check()) {
+            //     $user = Auth::guard($guard)->user();
 
-    return $next($request);
-}
+            //     // استخدام محاولة (Try-Catch) أو التأكد من وجود المسار قبل التوجيه
+            //     // if ($user->role === 'admin' && Route::has('admin.dashboard')) {
+            //     //     return redirect()->route('admin.dashboard');
+            //     // }
+
+            //     // if (Route::has('broker.dashboard')) {
+            //     //     return redirect()->route('broker.dashboard');
+            //     // }
+
+            // return redirect('/'); // مسار آمن في حال تعطلت الروابط الأخرى
+        }
+
+        return $next($request);
+    }
     // public function handle(Request $request, Closure $next, string ...$guards): Response
     // {
     //     $guards = empty($guards) ? [null] : $guards;

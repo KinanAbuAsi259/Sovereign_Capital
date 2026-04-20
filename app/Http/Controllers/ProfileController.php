@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,27 +26,27 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-   public function update(Request $request): RedirectResponse
-{
-    // 1. التحقق من البيانات
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'phone' => 'nullable|string|max:20', // السماح بتحديث الهاتف
-    ]);
+    public function update(Request $request): RedirectResponse
+    {
+        // 1. التحقق من البيانات
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20', // السماح بتحديث الهاتف
+        ]);
 
-    // 2. تعبئة البيانات في مودل المستخدم
-    $request->user()->fill($validated);
+        // 2. تعبئة البيانات في مودل المستخدم
+        $request->user()->fill($validated);
 
-    // 3. إذا تغير الإيميل (اختياري لو كنت تسمح بتغييره)
-    if ($request->user()->isDirty('email')) {
-        $request->user()->email_verified_at = null;
+        // 3. إذا تغير الإيميل (اختياري لو كنت تسمح بتغييره)
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
+        }
+
+        // 4. الحفظ النهائي
+        $request->user()->save();
+
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
-
-    // 4. الحفظ النهائي
-    $request->user()->save();
-
-    return Redirect::route('profile.edit')->with('status', 'profile-updated');
-}
 
     /**
      * Delete the user's account.

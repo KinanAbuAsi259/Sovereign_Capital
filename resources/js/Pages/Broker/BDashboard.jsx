@@ -18,14 +18,22 @@ const StatusBadge = ({ status }) => (
 );
 
 // 2. مكونات الصفوف (Rows)
-const OwnerRow = ({ item, onUpdate, setSelectedMedia }) => (
-    <tr className="hover:bg-white/[0.02] text-[15px] transition-all duration-300 group border-b border-white/5 last:border-0">
+const OwnerRow = ({ item, onUpdate, setSelectedMedia, onProfileClick }) => (
+    <tr
+        onClick={() => onProfileClick(item)} // تأكدنا من اسم الدالة هنا أيضاً
+        className="hover:bg-white/[0.05] cursor-pointer transition-all duration-300 border-b border-white/5 last:border-0 group"
+    >
         <td className="p-6">
-            <div className="font-black text-white text-[15px] tracking-tight">
-                {item.name}
-            </div>
-            <div className="text-accent-gold/40 text-[10px] mt-1">
-                {item.created_at}
+            <div className="flex items-center gap-3">
+                {/* أيقونة البروفايل الذهبية */}
+                <div className="size-8 rounded-full bg-accent-gold/10 flex items-center justify-center border border-accent-gold/20 group-hover:bg-accent-gold group-hover:text-[#0b1c2d] transition-all">
+                    <span className="material-symbols-outlined text-sm">
+                        person
+                    </span>
+                </div>
+                <div className="font-black text-white text-[15px] tracking-tight">
+                    {item.name}
+                </div>
             </div>
         </td>
         <td className="p-6">
@@ -59,6 +67,9 @@ const OwnerRow = ({ item, onUpdate, setSelectedMedia }) => (
             )}
         </td>
         <td className="p-6 text-center">
+            <StatusBadge status={item.status} />
+        </td>
+        <td className="p-6 text-center">
             <button
                 onClick={() => onUpdate(item.id, "owner")}
                 className="w-10 h-10 rounded-full bg-white/5 border border-white/10 text-white/40 hover:bg-accent-gold hover:text-primary transition-all flex items-center justify-center mx-auto"
@@ -68,11 +79,38 @@ const OwnerRow = ({ item, onUpdate, setSelectedMedia }) => (
                 </span>
             </button>
         </td>
+        <td className="p-5 border-b border-white/5">
+            <div className="max-w-[200px] truncate text-[11px] text-white/50 font-medium italic">
+                {item.admin_notes ? (
+                    <span className="flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-accent-gold shadow-[0_0_5px_rgba(212,175,55,0.5)]"></span>
+                        {item.admin_notes}
+                    </span>
+                ) : (
+                    <span className="opacity-20">لا توجد ملاحظات...</span>
+                )}
+            </div>
+        </td>
     </tr>
 );
-const InvestorRow = ({ item, onUpdate }) => (
-    <tr className="hover:bg-white/[0.02] transition-all duration-300 border-b border-white/5 last:border-0 group">
-        <td className="p-6 font-black text-white text-[15px]">{item.name}</td>
+const InvestorRow = ({ item, onUpdate, onProfileClick }) => (
+    <tr
+        onClick={() => onProfileClick(item)} // تأكدنا من اسم الدالة هنا أيضاً
+        className="hover:bg-white/[0.05] cursor-pointer transition-all duration-300 border-b border-white/5 last:border-0 group"
+    >
+        <td className="p-6">
+            <div className="flex items-center gap-3">
+                {/* أيقونة البروفايل الذهبية */}
+                <div className="size-8 rounded-full bg-accent-gold/10 flex items-center justify-center border border-accent-gold/20 group-hover:bg-accent-gold group-hover:text-[#0b1c2d] transition-all">
+                    <span className="material-symbols-outlined text-sm">
+                        person
+                    </span>
+                </div>
+                <div className="font-black text-white text-[15px] tracking-tight">
+                    {item.name}
+                </div>
+            </div>
+        </td>
         <td className="p-6">
             <div className="text-white font-bold text-[15px]">{item.phone}</div>
             <div className="text-accent-gold/50 text-[12px] mt-1 italic">
@@ -107,14 +145,39 @@ const InvestorRow = ({ item, onUpdate }) => (
                 <span className="material-symbols-outlined text-sm">sync</span>
             </button>
         </td>
+        <td className="p-5 border-b border-white/5">
+            <div className="max-w-[200px] truncate text-[11px] text-white/50 font-medium italic">
+                {item.admin_notes ? (
+                    <span className="flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-accent-gold shadow-[0_0_5px_rgba(212,175,55,0.5)]"></span>
+                        {item.admin_notes}
+                    </span>
+                ) : (
+                    <span className="opacity-20">لا توجد ملاحظات...</span>
+                )}
+            </div>
+        </td>
     </tr>
 );
 
 // 3. مكون سطر الزبون (Customer)
-const CustomerRow = ({ item, onUpdate }) => (
-    <tr className="hover:bg-white/[0.02] transition-all duration-300 border-b border-white/5 last:border-0 group">
-        <td className="p-6 font-black text-white text-[15px] tracking-tight">
-            {item.name}
+const CustomerRow = ({ item, onUpdate, onProfileClick }) => (
+    <tr
+        onClick={() => onProfileClick(item)} // تأكدنا من اسم الدالة هنا أيضاً
+        className="hover:bg-white/[0.05] cursor-pointer transition-all duration-300 border-b border-white/5 last:border-0 group"
+    >
+        <td className="p-6">
+            <div className="flex items-center gap-3">
+                {/* أيقونة البروفايل الذهبية */}
+                <div className="size-8 rounded-full bg-accent-gold/10 flex items-center justify-center border border-accent-gold/20 group-hover:bg-accent-gold group-hover:text-[#0b1c2d] transition-all">
+                    <span className="material-symbols-outlined text-sm">
+                        person
+                    </span>
+                </div>
+                <div className="font-black text-white text-[15px] tracking-tight">
+                    {item.name}
+                </div>
+            </div>
         </td>
         <td className="p-6 text-white font-bold text-[15px]">
             {item.post}
@@ -146,6 +209,18 @@ const CustomerRow = ({ item, onUpdate }) => (
                     cached
                 </span>
             </button>
+        </td>
+        <td className="p-5 border-b border-white/5">
+            <div className="max-w-[200px] truncate text-[11px] text-white/50 font-medium italic">
+                {item.admin_notes ? (
+                    <span className="flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-accent-gold shadow-[0_0_5px_rgba(212,175,55,0.5)]"></span>
+                        {item.admin_notes}
+                    </span>
+                ) : (
+                    <span className="opacity-20">لا توجد ملاحظات...</span>
+                )}
+            </div>
         </td>
     </tr>
 );
@@ -192,6 +267,47 @@ export default function BDashboard({
     const [displayType, setDisplayType] = useState("text"); // نوع العرض داخل البيانات (نص/جدول)
     const [showCopyNotify, setShowCopyNotify] = useState(false);
     const [selectedMedia, setSelectedMedia] = useState(null);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const {
+        data: noteData,
+        setData: setNoteData,
+        post: postNote,
+        processing: processingNote,
+    } = useForm({
+        note: selectedUser?.admin_notes || "",
+        type: "",
+    });
+
+    // دالة الحفظ
+    const saveNote = () => {
+        // تحديد المسار بناءً على التاب الحالي فقط
+        const routesMap = {
+            owners: "admin.owner.note",
+            investors: "admin.investor.note",
+            customers: "admin.customer.note",
+        };
+
+        postNote(route(routesMap[activeTab], selectedUser.id), {
+            note: noteData.note, // نرسل الملاحظة فقط
+            preserveScroll: true,
+            onSuccess: () => {
+                toast.success("تم الحفظ بنجاح");
+                // اختياري: إغلاق النافذة بعد الحفظ
+                // setIsProfileOpen(false);
+            },
+        });
+    };
+
+    const handleRowClick = (item) => {
+        setSelectedUser(item);
+        // تحديث قيمة الملاحظة في النموذج فوراً عند فتح النافذة
+        if (setNoteData) {
+            setNoteData("note", item.admin_notes || "");
+            type: activeTab;
+        }
+        setIsProfileOpen(true);
+    };
     const showToast = () => {
         setShowCopyNotify(true);
         setTimeout(() => setShowCopyNotify(false), 3000); // يختفي بعد 3 ثوانٍ
@@ -221,7 +337,8 @@ export default function BDashboard({
 📞 الهاتف: ${item.phone}
 📍 المحافظة: ${item.governorate}
 🏠 النوع: ${item.property_type || "غير محدد"}
-📏 المساحة/الميزانية: ${item.area || item.capital_range || "غير محدد"}
+📏 المساحة: ${item.area}
+📏 الميزانية: ${item.capital_range || "غير محدد"} ${item.currency || ""}
 🗺️ الموقع: ${item.location}
 💬 التفاصيل/الهدف: ${details}
 📊 الحالة: ${item.status}
@@ -303,7 +420,8 @@ export default function BDashboard({
                 "تفاصيل العقار / المساحة",
                 "الوسائط",
                 "الحالة",
-                "إجراء",
+                "الإجراء",
+                "الملاحظات",
             ];
         if (activeTab === "investors")
             return [
@@ -311,9 +429,17 @@ export default function BDashboard({
                 "الميزانية / الهدف",
                 "المساحة المطلوبة",
                 "الحالة",
-                "إجراء",
+                "الإجراء",
+                "الملاحظات",
             ];
-        return [...common, "الطلب / الموقع", "الوسائط", "الحالة", "إجراء"];
+        return [
+            ...common,
+            "الطلب / الموقع",
+            "الوسائط",
+            "الحالة",
+            "الإجراء",
+            "الملاحظات",
+        ];
     };
 
     return (
@@ -740,16 +866,37 @@ export default function BDashboard({
                                                         </span>
                                                     </p>
                                                     <p>
-                                                        <span className="text-[#d4af37] font-bold">
-                                                            📏
-                                                            الميزانية/المساحة:
-                                                        </span>{" "}
+                                                        <span className="text-[#d4af37] font-bold ml-2">
+                                                            الموقع:
+                                                        </span>
                                                         <span className="text-white">
-                                                            {item.area ||
-                                                                item.capital_range}
+                                                            {item.location ||
+                                                                item.preferred_location ||
+                                                                "غير محدد"}
                                                         </span>
                                                     </p>
-
+                                                    <div className="text-[#d4af37] font-bold ml-2">
+                                                        <span className="text-accent-gold font-bold">
+                                                            المساحة:
+                                                        </span>
+                                                        <span className="text-white">
+                                                            {item.area ||
+                                                                item.required_area ||
+                                                                "غير محدد"}
+                                                        </span>
+                                                    </div>
+                                                    <p className="notranslate">
+                                                        {" "}
+                                                        {/* أضفنا منع الترجمة هنا لضمان سلامة الأرقام */}
+                                                        <span className="text-[#d4af37] font-bold">
+                                                            الميزانية:
+                                                        </span>{" "}
+                                                        <span className="text-white">
+                                                            {item.capital_range
+                                                                ? `${item.capital_range}`
+                                                                : "غير محدد"}
+                                                        </span>
+                                                    </p>
                                                     <div className="pt-4 flex gap-4 border-t border-white/5 mt-4">
                                                         <button
                                                             onClick={() =>
@@ -836,6 +983,9 @@ export default function BDashboard({
                                                         <th className="p-5 border-b border-white/10 text-center">
                                                             الإجراء
                                                         </th>
+                                                        <th className="p-5 border-b border-white/10 text-center">
+                                                            الملاحظات الإدارية
+                                                        </th>
                                                     </tr>
                                                 </thead>
 
@@ -849,6 +999,9 @@ export default function BDashboard({
                                                                         item.id
                                                                     }
                                                                     item={item}
+                                                                    onProfileClick={
+                                                                        handleRowClick
+                                                                    }
                                                                     onUpdate={
                                                                         handleStatusUpdate
                                                                     }
@@ -868,6 +1021,9 @@ export default function BDashboard({
                                                                         item.id
                                                                     }
                                                                     item={item}
+                                                                    onProfileClick={
+                                                                        handleRowClick
+                                                                    }
                                                                     onUpdate={
                                                                         handleStatusUpdate
                                                                     }
@@ -884,6 +1040,9 @@ export default function BDashboard({
                                                                         item.id
                                                                     }
                                                                     item={item}
+                                                                    onProfileClick={
+                                                                        handleRowClick
+                                                                    }
                                                                     onUpdate={
                                                                         handleStatusUpdate
                                                                     }
@@ -892,100 +1051,90 @@ export default function BDashboard({
                                                         )}
                                                 </tbody>
                                             </table>
-                                            {/* قسم التحكم بالوسطاء - الأدمن فقط */}
-                                            {/* قسم التحكم بالوسطاء - نسخة الجدول الملكي */}
-                                            {auth.isAdmin && (
-                                                <div className="mt-20 space-y-8 animate-fade-in">
-                                                    {/* عنوان القسم بتنسيق فخم */}
-                                                    <div className="flex items-center gap-3 md:gap-6 p-2.5 md:p-4 bg-[#0b1c2d]/50 backdrop-blur-xl rounded-2xl md:rounded-[2rem] border border-white/10 w-fit max-w-full">
-                                                        {/* أيقونة الصلاحيات: صغرت في الجوال p-2.5 و text-xl */}
-                                                        <div className="bg-[#d4af37] p-2.5 md:p-3 rounded-xl md:rounded-2xl shrink-0 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
-                                                            <span className="material-symbols-outlined text-[#0b1c2d] text-xl md:text-2xl font-black">
-                                                                admin_panel_settings
-                                                            </span>
-                                                        </div>
-
-                                                        <div className="min-w-0">
-                                                            {/* العنوان: صغر الخط من 2xl إلى lg لضمان عدم انكسار السطر */}
-                                                            <h3 className="text-lg md:text-2xl font-black text-white italic tracking-tighter leading-tight truncate">
-                                                                إدارة{" "}
-                                                                <span className="text-[#d4af37]">
-                                                                    صلاحيات
-                                                                    الفريق
-                                                                </span>
-                                                            </h3>
-
-                                                            {/* النص الفرعي: تقليل التباعد tracking في الجوال */}
-                                                            <p className="text-white/30 text-[7px] md:text-[9px] font-bold uppercase tracking-[0.15em] md:tracking-[0.3em] mt-0.5 md:mt-1 truncate">
-                                                                Operational
-                                                                Security Center
-                                                            </p>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* الجدول الذهبي الموحد */}
-                                                    <div className="bg-[#0b1c2d] border border-[#d4af37]/20 rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-md">
-                                                        <div className="overflow-x-auto">
-                                                            <table className="w-full text-right border-collapse">
-                                                                <thead>
-                                                                    <tr className="sticky top-0 z-10 bg-gradient-to-l from-[#d4af37] via-[#f2d472] to-[#d4af37] text-[#0b1c2d] uppercase text-[11px] font-black tracking-[0.2em] shadow-md">
-                                                                        <th className="p-6 border-b border-white/10 text-right">
-                                                                            الوسيط
-                                                                            الرقمي
-                                                                            /
-                                                                            المعرف
-                                                                        </th>
-                                                                        <th className="p-6 border-b border-white/10 text-center">
-                                                                            عروض
-                                                                            البائعين
-                                                                        </th>
-                                                                        <th className="p-6 border-b border-white/10 text-center">
-                                                                            المستثمرين
-                                                                        </th>
-                                                                        <th className="p-6 border-b border-white/10 text-center">
-                                                                            الزبائن
-                                                                        </th>
-                                                                        <th className="p-6 border-b border-white/10 text-center">
-                                                                            تحديث
-                                                                            الحالة
-                                                                        </th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody className="text-white text-[15px] divide-y divide-white/5">
-                                                                    {all_brokers.map(
-                                                                        (
-                                                                            broker,
-                                                                        ) => (
-                                                                            <BrokerPermissionRow
-                                                                                key={
-                                                                                    broker.id
-                                                                                }
-                                                                                broker={
-                                                                                    broker
-                                                                                }
-                                                                            />
-                                                                        ),
-                                                                    )}
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {/* رسالة في حال عدم وجود بيانات */}
-                                            {(activeTab === "owners"
-                                                ? owners
-                                                : activeTab === "investors"
-                                                  ? investors
-                                                  : customers
-                                            ).length === 0 && (
-                                                <div className="p-20 text-center bg-white/5 text-white/20 italic">
-                                                    لا توجد سجلات حالياً في هذا
-                                                    القسم.
-                                                </div>
-                                            )}
                                         </div>
+                                    </div>
+                                )}
+                                {/* قسم التحكم بالوسطاء - الأدمن فقط */}
+                                {auth.isAdmin && (
+                                    <div className="mt-20 space-y-8 animate-fade-in">
+                                        {/* عنوان القسم بتنسيق فخم */}
+                                        <div className="flex items-center gap-3 md:gap-6 p-2.5 md:p-4 bg-[#0b1c2d]/50 backdrop-blur-xl rounded-2xl md:rounded-[2rem] border border-white/10 w-fit max-w-full">
+                                            {/* أيقونة الصلاحيات: صغرت في الجوال p-2.5 و text-xl */}
+                                            <div className="bg-[#d4af37] p-2.5 md:p-3 rounded-xl md:rounded-2xl shrink-0 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+                                                <span className="material-symbols-outlined text-[#0b1c2d] text-xl md:text-2xl font-black">
+                                                    admin_panel_settings
+                                                </span>
+                                            </div>
+
+                                            <div className="min-w-0">
+                                                {/* العنوان: صغر الخط من 2xl إلى lg لضمان عدم انكسار السطر */}
+                                                <h3 className="text-lg md:text-2xl font-black text-white italic tracking-tighter leading-tight truncate">
+                                                    إدارة{" "}
+                                                    <span className="text-[#d4af37]">
+                                                        صلاحيات الفريق
+                                                    </span>
+                                                </h3>
+
+                                                {/* النص الفرعي: تقليل التباعد tracking في الجوال */}
+                                                <p className="text-white/30 text-[7px] md:text-[9px] font-bold uppercase tracking-[0.15em] md:tracking-[0.3em] mt-0.5 md:mt-1 truncate">
+                                                    Operational Security Center
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {/* الجدول الذهبي الموحد */}
+                                        <div className="bg-[#0b1c2d] border border-[#d4af37]/20 rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-md">
+                                            <div className="overflow-x-auto">
+                                                <table className="w-full text-right border-collapse">
+                                                    <thead>
+                                                        <tr className="sticky top-0 z-10 bg-gradient-to-l from-[#d4af37] via-[#f2d472] to-[#d4af37] text-[#0b1c2d] uppercase text-[11px] font-black tracking-[0.2em] shadow-md">
+                                                            <th className="p-6 border-b border-white/10 text-right">
+                                                                الوسيط الرقمي /
+                                                                المعرف
+                                                            </th>
+                                                            <th className="p-6 border-b border-white/10 text-center">
+                                                                عروض البائعين
+                                                            </th>
+                                                            <th className="p-6 border-b border-white/10 text-center">
+                                                                المستثمرين
+                                                            </th>
+                                                            <th className="p-6 border-b border-white/10 text-center">
+                                                                الزبائن
+                                                            </th>
+                                                            <th className="p-6 border-b border-white/10 text-center">
+                                                                تحديث الحالة
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="text-white text-[15px] divide-y divide-white/5">
+                                                        {all_brokers.map(
+                                                            (broker) => (
+                                                                <BrokerPermissionRow
+                                                                    key={
+                                                                        broker.id
+                                                                    }
+                                                                    broker={
+                                                                        broker
+                                                                    }
+                                                                />
+                                                            ),
+                                                        )}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* رسالة في حال عدم وجود بيانات */}
+                                {(activeTab === "owners"
+                                    ? owners
+                                    : activeTab === "investors"
+                                      ? investors
+                                      : customers
+                                ).length === 0 && (
+                                    <div className="p-20 text-center bg-white/5 text-white/20 italic">
+                                        لا توجد سجلات حالياً في هذا القسم.
                                     </div>
                                 )}
                             </div>
@@ -1127,11 +1276,209 @@ export default function BDashboard({
                         </div>
                     </div>
                 )}
+                {isProfileOpen && selectedUser && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#0b1c2d]/90 backdrop-blur-md animate-in fade-in duration-300">
+                        <div className="relative w-full max-w-2xl bg-[#0b1c2d] border border-white/10 rounded-[2.5rem] shadow-[0_0_80px_rgba(212,175,55,0.15)] max-h-[90vh] flex flex-col overflow-hidden">
+                            {/* 1. هيدر النافذة (ثابت) */}
+                            <div className="p-6 border-b border-white/5 flex justify-between items-center shrink-0 bg-gradient-to-l from-white/[0.02] to-transparent">
+                                <div className="flex items-center gap-3">
+                                    <span className="material-symbols-outlined text-white">
+                                        account_circle
+                                    </span>
+                                    <h2 className="text-white font-black uppercase tracking-widest text-[11px]">
+                                        ملف{" "}
+                                        {activeTab === "owners"
+                                            ? "البائع"
+                                            : activeTab === "investors"
+                                              ? "المستثمر"
+                                              : "الزبون"}
+                                    </h2>
+                                </div>
+                                <button
+                                    onClick={() => setIsProfileOpen(false)}
+                                    className="text-white/40 hover:text-accent-gold transition-colors"
+                                >
+                                    <span className="material-symbols-outlined text-2xl">
+                                        close
+                                    </span>
+                                </button>
+                            </div>
+
+                            {/* 2. محتوى النافذة (قابل للتمرير) */}
+                            <div
+                                className="overflow-y-auto flex-1 custom-scrollbar text-right"
+                                dir="rtl"
+                            >
+                                {/* رأس الملف الشخصي - تدرج ملكي */}
+                                <div className="bg-gradient-to-l from-[#d4af37] via-[#f2d472] to-[#d4af37] p-8 md:p-10 text-[#0b1c2d] shadow-lg">
+                                    <div className="flex items-center gap-6">
+                                        <div className="size-16 md:size-20 bg-[#11111] rounded-full flex items-center justify-center shadow-2xl border-2 border-[#00000]/50">
+                                            <span className="material-symbols-outlined text-accent-gold text-4xl md:text-5xl">
+                                                person
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tighter leading-none mb-2">
+                                                {selectedUser.name}
+                                            </h2>
+                                            <p className="font-bold opacity-70 text-[10px] md:text-xs flex items-center gap-1 justify-end md:justify-start">
+                                                <span className="material-symbols-outlined text-[14px]">
+                                                    calendar_month
+                                                </span>
+                                                سجل في:{" "}
+                                                {selectedUser.created_at ||
+                                                    "تاريخ غير متوفر"}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* شبكة البيانات */}
+                                <div className="p-6 md:p-10 space-y-10">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <DetailItem
+                                            icon="call"
+                                            label="رقم التواصل"
+                                            value={selectedUser.phone}
+                                        />
+                                        <DetailItem
+                                            icon="location_on"
+                                            label="النطاق الجغرافي"
+                                            value={
+                                                selectedUser.location ||
+                                                selectedUser.preferred_location
+                                            }
+                                        />
+                                        <DetailItem
+                                            icon="location_on"
+                                            label="المحافظة "
+                                            value={selectedUser.governorate}
+                                        />
+
+                                        {activeTab === "owners" && (
+                                            <>
+                                                <DetailItem
+                                                    icon="home"
+                                                    label="تصنيف العقار"
+                                                    value={
+                                                        selectedUser.property_type
+                                                    }
+                                                />
+                                                <DetailItem
+                                                    icon="straighten"
+                                                    label="المساحة الكلية"
+                                                    value={`${selectedUser.area} م²`}
+                                                />
+                                            </>
+                                        )}
+
+                                        {activeTab === "investors" && (
+                                            <>
+                                                <DetailItem
+                                                    icon="payments"
+                                                    label="الميزانية المالية"
+                                                    value={
+                                                        selectedUser.capital_range
+                                                    }
+                                                />
+                                                <DetailItem
+                                                    icon="target"
+                                                    label="الهدف الاستثماري"
+                                                    value={
+                                                        selectedUser.investment_goal
+                                                    }
+                                                />
+                                            </>
+                                        )}
+                                    </div>
+
+                                    {/* قسم الملاحظات - بنفس ستايل الفورم في add-broker */}
+                                    <div className="space-y-3 pt-6 border-t border-white/5">
+                                        <label className="text-accent-gold/60 text-[10px] text-white/90 uppercase tracking-[0.2em] mr-2 block">
+                                            مذكرات الإدارة السرية
+                                        </label>
+                                        <div className="bg-white/5 border border-white/10 rounded-[1.5rem] p-4 focus-within:border-accent-gold/40 transition-all">
+                                            <textarea
+                                                value={
+                                                    noteData
+                                                        ? noteData.note
+                                                        : ""
+                                                }
+                                                onChange={(e) =>
+                                                    setNoteData(
+                                                        "note",
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                placeholder="اكتب ملاحظاتك الخاصة هنا..."
+                                                className="w-full bg-transparent text-white text-sm outline-none resize-none h-32 custom-scrollbar placeholder:text-white"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* 3. تذييل النافذة (ثابت) */}
+                            {/* 3. تذييل النافذة (ثابت) */}
+                            <div className="p-6 md:p-8 border-t border-white/5 bg-[#081522] flex gap-4 shrink-0">
+                                <a
+                                    // استخدمنا selectedUser بدلاً من item لضمان عمل الرابط داخل النافذة
+                                    href={`https://wa.me/${selectedUser.phone.replace(/[+\s]/g, "")}?text=${encodeURIComponent(
+                                        `تحية طيبة، أنا المستشار من Sovereign Capital، أتواصل معك بخصوص اهتمامك بـ ${selectedUser.property_type || "الاستثمار"}`,
+                                    )}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex-1 flex items-center justify-center gap-3 bg-emerald-600 text-white py-4 rounded-2xl font-black hover:bg-emerald-500 hover:scale-[1.02] transition-all shadow-xl shadow-emerald-900/20 active:scale-95 text-xs uppercase tracking-widest"
+                                >
+                                    {/* أيقونة واتساب من Material Symbols */}
+                                    <span className="material-symbols-outlined text-xl">
+                                        chat
+                                    </span>
+                                    مراسلة عبر واتساب
+                                </a>
+
+                                <button
+                                    onClick={saveNote}
+                                    disabled={processingNote}
+                                    className="flex items-center justify-center gap-4 
+            bg-accent text-[#0b1c2d] font-black 
+            rounded-xl transition-all duration-300 
+            hover:scale-105 hover:brightness-110
+            /* --- تحكم بالأبعاد من هنا --- */
+            w-[120px] h-[60px]   /* العرض والارتفاع الثابت */
+            text-sm              /* حجم الخط */
+            shadow-lg shadow-accent/20
+        "
+                                >
+                                    {processingNote ? "جاري..." : "حفظ المذكرة"}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </AuthenticatedLayout>
     );
 }
-
+// مكون فرعي لعرض التفاصيل
+function DetailItem({ icon, label, value }) {
+    return (
+        <div className="flex flex-col gap-2 group">
+            <div className="flex items-center gap-2 text-accent-gold/50">
+                <span className="material-symbols-outlined text-lg text-white/90">
+                    {icon}
+                </span>
+                {/* تم تغيير font-white إلى text-white وتخفيف الشفافية للفخامة */}
+                <span className="text-[9px] text-white/90 font-black uppercase tracking-[0.3em]">
+                    {label}
+                </span>
+            </div>
+            <div className="text-white font-bold text-lg pr-1">
+                {value || "---"}
+            </div>
+        </div>
+    );
+}
 // مكونات فرعية متكررة
 function StatusCell({ status }) {
     const isContacted = status === "تم التواصل";

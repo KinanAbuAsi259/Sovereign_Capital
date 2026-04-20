@@ -33,9 +33,13 @@ const OwnerRow = ({ item, onUpdate, setSelectedMedia }) => {
                 <div className="text-white text-[13px] font-bold">
                     {item.property_type}
                 </div>
-                <div className="text-white/40 text-[11px] mt-1">
-                    {item.location} —{" "}
-                    <span className="text-[#d4af37]/60">{item.area} م²</span>
+                <div className="text-white/40 text-[11px] mt-2 flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[12px] text-[#d4af37]">
+                        location_on
+                    </span>
+                    <span>{item.location} -</span>
+
+                    <span>{item.area} م²</span>
                 </div>
             </td>
 

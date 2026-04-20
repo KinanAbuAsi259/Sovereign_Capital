@@ -24,50 +24,69 @@ export default function MainLayout({ children }) {
                         <img
                             src="/assets/logo.png"
                             alt="أيقونة Sovereign Capital"
-                            className="size-11 object-contain"
+                            // h-16 (64px) في الجوال و h-20 (80px) في الشاشات الأكبر
+                            // يمكنك تجربة w-auto للحفاظ على أبعاد الشعار الأصلية
+                            className="h-16 md:h-18 w-auto object-contain transition-transform hover:scale-105"
                         />
 
                         {/* تم دمج النص هنا ليكون داخل Link مباشرة */}
-                        <div className="flex flex-row-reverse md:flex-row gap-2 md:gap-3 
-                text-[10px] sm:text-[12px] md:text-[15px] 
+                        <div
+                            className="flex flex-row md:flex-row gap-2 md:gap-3 text-[10px] sm:text-[12px] md:text-[15px] 
                 font-black uppercase 
                 tracking-[0.15em] md:tracking-[0.4em] 
-                text-slate-400">
-    <span className="hover:text-accent cursor-pointer transition-colors duration-500">
-        Sovereign
-    </span>
-    <span className="hover:text-accent cursor-pointer transition-colors duration-500 text-accent/50 md:text-slate-400">
-        Capital
-    </span>
-</div>
+                text-slate-400"
+                        >
+                            <span className="hover:text-accent cursor-pointer transition-colors duration-500">
+                                Capital
+                            </span>
+                            <span className="hover:text-accent cursor-pointer transition-colors duration-500 ">
+                                Sovereign
+                            </span>
+                        </div>
                     </Link>
-
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex gap-4">
-                        {["من نحن", "آلية العمل", "الأمان"].map((item) => (
+                        {[
+                            { name: "من نحن", routeName: "about" },
+                            { name: "آلية العمل", routeName: "workflow" },
+                            { name: "الأمان", routeName: "security" },
+                        ].map((item) => (
                             <Link
-                                key={item}
-                                href="#"
+                                key={item.routeName}
+                                href={route(item.routeName)}
                                 className="px-4 py-1.5 border border-white/10 rounded-full bg-white/5 hover:border-accent/40 hover:text-accent transition-all text-[11px] font-bold uppercase tracking-wider"
                             >
-                                {item}
+                                {item.name}
                             </Link>
                         ))}
                     </nav>
 
                     {/* Actions Area */}
                     <div className="flex items-center gap-3">
-    {/* زر تسجيل الدخول - تم تعديله ليظهر في الجوال (نزعنا hidden) */}
-    <Link
-        href={route("login")}
-        className="flex items-center gap-2 bg-accent text-[#0b1c2d] px-4 md:px-6 py-2 md:py-2.5 rounded-xl text-[10px] md:text-xs font-black uppercase hover:brightness-110 transition-all shadow-xl shadow-accent/10"
-    >
-        <span className="material-symbols-outlined text-sm">
-            vpn_key
-        </span>
-        <span>دخول</span>
-    </Link>
-</div>
+                        <Link
+                            href={route("login")}
+                            className="flex items-center justify-center gap-4 
+            bg-accent text-[#0b1c2d] font-black 
+            rounded-xl transition-all duration-300 
+            hover:scale-105 hover:brightness-110
+            /* --- تحكم بالأبعاد من هنا --- */
+            w-[120px] h-[40px]   /* العرض والارتفاع الثابت */
+            text-sm              /* حجم الخط */
+            shadow-lg shadow-accent/20
+        "
+                        >
+                            <span
+                                className="material-symbols-outlined text-xl"
+                                style={{
+                                    transform: "scaleX(1.1)", // تمدد معقول (مره ونصف) لمنع التشويه
+                                    display: "inline-block",
+                                }}
+                            >
+                                vpn_key
+                            </span>
+                            <span className="tracking-tight">دخول</span>
+                        </Link>
+                    </div>
                 </nav>
 
                 {/* Mobile Menu Dropdown */}
@@ -89,12 +108,6 @@ export default function MainLayout({ children }) {
                             >
                                 دخول
                             </Link>
-                            <Link
-                                href={route("register")}
-                                className="text-center border border-accent text-accent font-black py-3 rounded-xl text-sm"
-                            >
-                                تسجيل
-                            </Link>
                         </div>
                     </nav>
                 )}
@@ -104,38 +117,39 @@ export default function MainLayout({ children }) {
             <main className="pt-20 min-h-screen">{children}</main>
 
             {/* Footer */}
-            <footer className="bg-[#0b1c2d] border-t border-white/5 py-16 px-6 lg:px-20">
-                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
-                    <div className="space-y-4 text-center md:text-right">
-                        <div className="flex items-center justify-center md:justify-start gap-3 text-white font-bold text-lg">
-                            <img
-                                src="/assets/logo.jpg"
-                                alt="أيقونة Sovereign Capital"
-                                className="size-10 object-contain"
-                            />
-                            SOVEREIGN CAPITAL
-                        </div>
-                        <p className="text-slate-500 text-sm max-w-xs relative z-10 p-5">
-                            نكرس جهودنا لربط رأس المال العالمي بالفرص
-                            الاستراتيجية الفاخرة.
-                        </p>
+            <footer className="w-full py-8 px-6 border-t border-white/5 bg-[#0b1c2d]">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+                    {/* اللوجو أو اسم الشركة */}
+                    <div className="text-slate-500 text-[10px] font-bold">
+                        © 2026 SOVEREIGN CAPITAL
                     </div>
 
-                    <div className="flex gap-8 text-[10px] font-black uppercase tracking-[0.3em] text-slate-600">
-                        <span className="hover:text-accent cursor-pointer transition-colors">
-                            Privacy
-                        </span>
-                        <span className="hover:text-accent cursor-pointer transition-colors">
-                            Terms
-                        </span>
-                        <span className="hover:text-accent cursor-pointer transition-colors">
-                            Vault v2.4
-                        </span>
+                    {/* الروابط الجديدة - في الجوال تظهر كأسفل الصفحة بشكل مرتب */}
+                    <div className="flex flex-wrap justify-center gap-6 md:gap-12 text-[11px] font-black uppercase tracking-[0.2em]">
+                        <Link
+                            href={route("about")}
+                            className="text-slate-400 hover:text-accent transition-all duration-300"
+                        >
+                            من نحن
+                        </Link>
+                        <Link
+                            href={route("workflow")}
+                            className="text-slate-400 hover:text-accent transition-all duration-300"
+                        >
+                            آلية العمل
+                        </Link>
+                        <Link
+                            href={route("security")}
+                            className="text-slate-400 hover:text-accent transition-all duration-300"
+                        >
+                            الأمان
+                        </Link>
                     </div>
 
-                    <p className="text-[10px] font-medium text-slate-500 tracking-widest uppercase">
-                        © 2026 Sovereign Capital Luxe
-                    </p>
+                    {/* رقم الإصدار - يظهر فقط في الشاشات الكبيرة */}
+                    <div className="hidden md:block text-slate-700 text-[9px] font-mono">
+                        SYSTEM_VAULT_V2.5_STABLE
+                    </div>
                 </div>
             </footer>
         </div>

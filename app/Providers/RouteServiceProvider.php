@@ -18,9 +18,9 @@ class RouteServiceProvider extends ServiceProvider
      * @var string
      */
     // بدلاً من /dashboard
-// public const HOME = '/broker/dashboard';
-// غيره من /dashboard إلى مسار الوسيط أو الأدمن الافتراضي
-public const HOME = '/bdashboard';
+    // public const HOME = '/broker/dashboard';
+    // غيره من /dashboard إلى مسار الوسيط أو الأدمن الافتراضي
+    public const HOME = '/bdashboard';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.

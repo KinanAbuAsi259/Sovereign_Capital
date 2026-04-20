@@ -164,6 +164,13 @@
       0 => 'Termwind\\Laravel\\TermwindServiceProvider',
     ),
   ),
+  'propaganistas/laravel-phone' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Propaganistas\\LaravelPhone\\PhoneServiceProvider',
+    ),
+  ),
   'ryangjchandler/blade-capture-directive' => 
   array (
     'aliases' => 
