@@ -55,11 +55,15 @@ export default function Customer_page() {
     const submit = (e) => {
         e.preventDefault();
         post(route("customer.store"), {
-            onSuccess: () => {
-                toast.success("تم استلام طلبك بنجاح!");
-                reset(); // أضف هذه لتفريغ الحقول ومنع المستخدم من الضغط ثانية
+            onError: (err) => {
+                // هنا يمكنك طباعة الأخطاء في الـ Console لتتأكد من وصولها
+                console.log("Server Errors:", err);
+                toast.error("يرجى تصحيح الأخطاء في الحقول المطلوبة");
             },
-            onError: () => toast.error("يرجى ملء كافة الحقول."),
+            onSuccess: () =>
+                toast.success(
+                    "تم تسجيل الطلب بنجاح، سيتم التواصل معك من قبل الفريق",
+                ),
         });
     };
 

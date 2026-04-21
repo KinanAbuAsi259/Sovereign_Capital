@@ -95,14 +95,15 @@ export default function Owner_page() {
     const submit = (e) => {
         e.preventDefault();
         post(route("owner.store"), {
-            onSuccess: () => {
-                toast.success(
-                    "تم استلام عرض البيع بنجاح، فريقنا سيتواصل معك قريباً!",
-                );
-                reset(); // تصفير الفورم بعد النجاح
+            onError: (err) => {
+                // هنا يمكنك طباعة الأخطاء في الـ Console لتتأكد من وصولها
+                console.log("Server Errors:", err);
+                toast.error("يرجى تصحيح الأخطاء في الحقول المطلوبة");
             },
-            onError: () =>
-                toast.error("يرجى التأكد من ملء الحقول المطلوبة بدقة."),
+            onSuccess: () =>
+                toast.success(
+                    "تم تسجيل الطلب بنجاح، سيتم التواصل معك من قبل الفريق",
+                ),
         });
     };
 

@@ -82,10 +82,15 @@ export default function Investor_page() {
         e.preventDefault();
         console.log("🚀 تم الضغط على زر الإرسال الآن!");
         post(route("lead.store"), {
+            onError: (err) => {
+                // هنا يمكنك طباعة الأخطاء في الـ Console لتتأكد من وصولها
+                console.log("Server Errors:", err);
+                toast.error("يرجى تصحيح الأخطاء في الحقول المطلوبة");
+            },
             onSuccess: () =>
-                toast.success("تم استلام طلبك بنجاح، سنتواصل معك قريباً!"),
-            onError: () =>
-                toast.error("يرجى تصحيح الأخطاء في الحقول المطلوبة."),
+                toast.success(
+                    "تم تسجيل الطلب بنجاح، سيتم التواصل معك من قبل الفريق",
+                ),
         });
     };
     // مكون فرعي للسهم لتقليل تكرار الكود
@@ -216,15 +221,21 @@ export default function Investor_page() {
 
                             <input
                                 type="email"
-                                value={data.email}
+                                // حل مشكلة Controlled input: نضع || "" لضمان عدم كون القيمة undefined
+                                value={data.email || ""}
                                 onChange={(e) =>
                                     setData("email", e.target.value)
                                 }
                                 placeholder="example@mail.com"
-                                className="w-full bg-white/5 border border-white/10 rounded-xl p-5 text-right flex flex-col gap-2"
+                                // تغيير لون الحدود عند وجود خطأ وإضافة تأثير الـ Focus الذهبي
+                                className={`w-full bg-white/5 border ${errors.email ? "border-red-500 animate-shake" : "border-white/10"} rounded-xl p-5 text-right outline-none transition-all focus:border-accent-gold/50`}
                             />
+
                             {errors.email && (
-                                <span className="text-red-500 text-xs mt-1 block font-bold animate-pulse">
+                                <span className="text-red-500 text-[11px] mt-1 flex items-center gap-1 font-bold animate-pulse px-2">
+                                    <span className="material-symbols-outlined text-[14px]">
+                                        error
+                                    </span>
                                     {errors.email}
                                 </span>
                             )}

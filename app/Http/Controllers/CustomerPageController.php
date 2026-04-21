@@ -17,6 +17,20 @@ class CustomerPageController extends Controller
     // CustomerPageController.php
     public function store(Request $request)
     {
+         $phone = str_replace([' ', '-', '(', ')'], '', $request->phone);
+
+// 2. إذا كان الرقم يبدأ بـ 0، استبدله برمز النداء (مثال للرمز السوري أو السعودي)
+if (str_starts_with($phone, '0')) {
+    // افترضنا هنا رمز النداء +963، يمكنك تغييره حسب دولتك
+    $phone = '+963' . substr($phone, 1); 
+} 
+// 3. إذا بدأ الرقم مباشرة بدون 0 وبدون +
+elseif (!str_starts_with($phone, '+')) {
+    $phone = '+963' . $phone;
+}
+
+// 4. دمج الرقم المعدل في الطلب ليتم فحصه في القاعدة
+$request->merge(['phone' => $phone]);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
              'phone' => [
@@ -40,7 +54,7 @@ class CustomerPageController extends Controller
         'email.dns' => 'هذا البريد الإلكتروني غير موجود أو غير مفعل.',
         'email.unique' => 'هذا البريد مسجل مسبقاً في نظامنا.',
         'phone.regex' => 'صيغة رقم الهاتف خاطئة، يرجى إدخال أرقام فقط.',
-        'phone.unique' => 'هذا الرقم مسجل لدينا بطلب استثمار سابق.',
+        'phone.unique' => 'هذا الرقم مسجل لدينا بطلب سابق.',
         'phone.min' => 'رقم الهاتف قصير جداً.',
         'name.required'   => 'يرجى إدخال الاسم الكامل لصاحب الطلب.',
         'phone.required'  => 'رقم الهاتف ضروري لنتمكن من التواصل معك.',

@@ -18,6 +18,20 @@ class LeadController extends Controller
     public function store(Request $request)
     {
         Log::info('📥 وصل طلب جديد إلى السيرفر في تمام الساعة: '.now());
+        $phone = str_replace([' ', '-', '(', ')'], '', $request->phone);
+
+// 2. إذا كان الرقم يبدأ بـ 0، استبدله برمز النداء (مثال للرمز السوري أو السعودي)
+if (str_starts_with($phone, '0')) {
+    // افترضنا هنا رمز النداء +963، يمكنك تغييره حسب دولتك
+    $phone = '+963' . substr($phone, 1); 
+} 
+// 3. إذا بدأ الرقم مباشرة بدون 0 وبدون +
+elseif (!str_starts_with($phone, '+')) {
+    $phone = '+963' . $phone;
+}
+
+// 4. دمج الرقم المعدل في الطلب ليتم فحصه في القاعدة
+$request->merge(['phone' => $phone]);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
            'phone' => [
@@ -25,7 +39,7 @@ class LeadController extends Controller
         'regex:/^([0-9\s\-\+\(\)]*)$/', // يقبل الأرقام، الزائد، والمسافات
         'min:7',
         'max:20',
-        'unique:Leads,phone', 
+        'unique:leads,phone', 
     ], 
             'country_code' => 'required|string',
             'email' => 'nullable|email:rfc,dns|unique:users,email',
