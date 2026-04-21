@@ -20,7 +20,13 @@ class LeadController extends Controller
         Log::info('📥 وصل طلب جديد إلى السيرفر في تمام الساعة: '.now());
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required||phone:AUTO,mobile|unique:users,phone|regex:/^\d{7,15}$/',
+           'phone' => [
+        'required',
+        'regex:/^([0-9\s\-\+\(\)]*)$/', // يقبل الأرقام، الزائد، والمسافات
+        'min:7',
+        'max:20',
+        'unique:Leads,phone', 
+    ], 
             'country_code' => 'required|string',
             'email' => 'nullable|email:rfc,dns|unique:users,email',
             'governorate' => 'required|string',
@@ -32,11 +38,14 @@ class LeadController extends Controller
             'investment_goal' => 'required|string',
         ],
             [
-                'email.dns' => 'هذا البريد الإلكتروني غير موجود أو غير مفعل.',
-                'email.unique' => 'هذا البريد مسجل مسبقاً في نظامنا.',
-                'phone.regex' => 'رقم الهاتف غير صحيح، يرجى استخدام الأرقام فقط.',
-                'phone.phone' => 'رقم الهاتف المدخل غير صحيح أو غير متوافق مع الصيغة الدولية.',
-                'phone.unique' => 'رقم الهاتف هذا مسجل مسبقاً في نظامنا.',
+    'email.dns' => 'هذا البريد الإلكتروني غير موجود أو غير مفعل.',
+    'email.unique' => 'هذا البريد مسجل مسبقاً في نظامنا.',
+    'phone.regex' => 'صيغة رقم الهاتف خاطئة، يرجى إدخال أرقام فقط.',
+    'phone.unique' => 'هذا الرقم مسجل لدينا بطلب استثمار سابق.',
+    'phone.min' => 'رقم الهاتف قصير جداً.',
+    'name.required'   => 'يرجى إدخال الاسم الكامل لصاحب الطلب.',
+    'phone.required'  => 'رقم الهاتف ضروري لنتمكن من التواصل معك.',
+    'budget.required' => 'يرجى تحديد الميزانية المتوقعة للاستثمار.',
             ]);
         $validated['phone'] = $validated['country_code'].$validated['phone'];
 

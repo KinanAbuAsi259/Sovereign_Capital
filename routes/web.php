@@ -29,6 +29,9 @@ Route::post('/upload-temp', [LeadController::class, 'uploadTemp'])->name('upload
 Route::get('/about', [StaticController::class, 'about'])->name('about');
 Route::get('/workflow', [StaticController::class, 'workflow'])->name('workflow');
 Route::get('/security', [StaticController::class, 'security'])->name('security');
+Route::get('/services', function () {
+    return Inertia::render('ServicesPage'); // اسم ملف الـ React الجديد
+})->name('services');
 // [2] مسارات الضيوف فقط (الذين لم يسجلوا دخولهم)
 
 Route::middleware('guest')->group(function () {

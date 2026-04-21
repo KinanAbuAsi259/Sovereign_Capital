@@ -19,15 +19,33 @@ class CustomerPageController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required|string',
-            'country_code' => 'required|string',
+             'phone' => [
+        'required',
+        'regex:/^([0-9\s\-\+\(\)]*)$/', // يقبل الأرقام، الزائد، والمسافات
+        'min:7',
+        'max:20',
+        'unique:Leads,phone', 
+    ],
+    'country_code' => 'required|string',
+    'email' => 'nullable|email:rfc,dns|unique:users,email',
+            
             'governorate' => 'required',
             'property_type' => 'required', // يجب أن يكون من ضمن الـ enum
             'other_property_type' => 'nullable|string', // الحقل الديناميكي
             'additional_details' => 'nullable|string',
             'preferred_location' => 'required',
             'required_area' => 'required',
-        ]);
+        ],
+        [
+        'email.dns' => 'هذا البريد الإلكتروني غير موجود أو غير مفعل.',
+        'email.unique' => 'هذا البريد مسجل مسبقاً في نظامنا.',
+        'phone.regex' => 'صيغة رقم الهاتف خاطئة، يرجى إدخال أرقام فقط.',
+        'phone.unique' => 'هذا الرقم مسجل لدينا بطلب استثمار سابق.',
+        'phone.min' => 'رقم الهاتف قصير جداً.',
+        'name.required'   => 'يرجى إدخال الاسم الكامل لصاحب الطلب.',
+        'phone.required'  => 'رقم الهاتف ضروري لنتمكن من التواصل معك.',
+            ]
+        );
         if ($validated['property_type'] === 'غير ذلك' && ! empty($validated['other_property_type'])) {
             $validated['property_type'] = $validated['other_property_type'];
         }

@@ -110,7 +110,7 @@ export default function Customer_page() {
                                 </label>
                                 <div className="flex flex-row-reverse shadow-inner bg-white/5 border border-white/10 rounded-xl overflow-hidden focus-within:border-accent-gold">
                                     <select
-                                        className="bg-background-dark/50 border-0 border-l border-white/10 text-white px-3 outline-none text-xs cursor-pointer"
+                                        className="bg-background-dark/50 border-0 border-l border-white/10 text-white px-1 outline-none text-xs cursor-pointer"
                                         value={data.country_code}
                                         onChange={(e) =>
                                             setData(
@@ -129,15 +129,27 @@ export default function Customer_page() {
                                             </option>
                                         ))}
                                     </select>
-                                    <input
-                                        type="tel"
-                                        dir="ltr"
-                                        className="flex-1 bg-transparent border-0 text-white p-4 outline-none text-left"
-                                        placeholder="9xx xxx xxx"
-                                        onChange={(e) =>
-                                            setData("phone", e.target.value)
-                                        }
-                                    />
+                                    <div className="space-y-1">
+                                        <input
+                                            type="text"
+                                            // الحل لمشكلة uncontrolled input: نضع || ""
+                                            value={data.phone || ""}
+                                            onChange={(e) =>
+                                                setData("phone", e.target.value)
+                                            }
+                                            className={`w-full bg-white/5 border ${errors.phone ? "border-rose-500 animate-shake" : "border-white/10"} rounded-2xl px-4 py-4 text-white outline-none transition-all`}
+                                        />
+
+                                        {/* عرض رسالة الخطأ المحددة من السيرفر */}
+                                        {errors.phone && (
+                                            <p className="text-rose-500 text-xs mt-2 mr-2 font-bold flex items-center gap-1">
+                                                <span className="material-symbols-outlined text-sm">
+                                                    error
+                                                </span>
+                                                {errors.phone}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>

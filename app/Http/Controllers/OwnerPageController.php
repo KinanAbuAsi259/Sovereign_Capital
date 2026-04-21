@@ -27,17 +27,33 @@ class OwnerPageController extends Controller
         // 1. التحقق من صحة البيانات
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required|string',
+            'phone' => [
+        'required',
+        'regex:/^([0-9\s\-\+\(\)]*)$/', // يقبل الأرقام، الزائد، والمسافات
+        'min:7',
+        'max:20',
+        'unique:Leads,phone', 
+    ],
             'country_code' => 'required|string',
             'governorate' => 'required|string',
             'property_type' => 'required|string',
             'other_property_type' => 'nullable|string', // الحقل الديناميكي في الواجهة
             'location' => 'required|string',
             'area' => 'required|string',
-            'email' => 'nullable|email',
+            'email' => 'nullable|email:rfc,dns|unique:users,email',
             'additional_details' => 'nullable|string',
             'media.*' => 'nullable|file|mimes:jpg,jpeg,png,mp4,mov|max:102400', // 100MB للملف
-        ]);
+        ],
+        [
+        'email.dns' => 'هذا البريد الإلكتروني غير موجود أو غير مفعل.',
+        'email.unique' => 'هذا البريد مسجل مسبقاً في نظامنا.',
+        'phone.regex' => 'صيغة رقم الهاتف خاطئة، يرجى إدخال أرقام فقط.',
+        'phone.unique' => 'هذا الرقم مسجل لدينا بطلب استثمار سابق.',
+        'phone.min' => 'رقم الهاتف قصير جداً.',
+        'name.required'   => 'يرجى إدخال الاسم الكامل لصاحب الطلب.',
+        'phone.required'  => 'رقم الهاتف ضروري لنتمكن من التواصل معك.',
+            ]
+        );
 
         // 2. منطق دمج "نوع العقار" إذا اختار "غير ذلك"
         if ($validated['property_type'] === 'غير ذلك' && ! empty($validated['other_property_type'])) {

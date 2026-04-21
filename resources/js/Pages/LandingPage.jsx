@@ -42,27 +42,27 @@ export default function LandingPage() {
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16 items-center w-full">
                         {/* Column 1: الشعار (يبقى على اليسار في الترتيب ولكن داخل المجموعة المتمركزة) */}
                         {/* Column 1: الشعار */}
-<div className="md:col-span-4 flex justify-center md:justify-end">
-    <Link
-        href="/"
-        className="group transition-transform duration-500 hover:scale-110 block relative z-10 p-0.15"
-        // ❌ حذفنا الـ transform اليدوي الثابت هنا لضمان التوسط
-    >
-        <div className="relative p-0.21 flex justify-center">
-            <div className="absolute inset-0 bg-accent-gold opacity-10 blur-3xl rounded-full scale-150"></div>
-            <img
-                src="/assets/logo.png"
-                alt="أيقونة Sovereign Capital"
-                className="object-contain transition-transform duration-300 group-hover:scale-110"
-                style={{
-                    // جعل الحجم مرناً أكثر: في الجوال 200px وفي الشاشات الكبيرة يصل لـ 400px
-                    width: "clamp(200px, 25vw, 400px)", 
-                    height: "auto",
-                }}
-            />
-        </div>
-    </Link>
-</div>
+                        <div className="md:col-span-4 flex justify-center md:justify-end">
+                            <Link
+                                href="/"
+                                className="group transition-transform duration-500 hover:scale-110 block relative z-10 p-0.15"
+                                // ❌ حذفنا الـ transform اليدوي الثابت هنا لضمان التوسط
+                            >
+                                <div className="relative p-0.21 flex justify-center">
+                                    <div className="absolute inset-0 bg-accent-gold opacity-10 blur-3xl rounded-full scale-150"></div>
+                                    <img
+                                        src="/assets/logo.png"
+                                        alt="أيقونة Sovereign Capital"
+                                        className="object-contain transition-transform duration-300 group-hover:scale-110"
+                                        style={{
+                                            // جعل الحجم مرناً أكثر: في الجوال 200px وفي الشاشات الكبيرة يصل لـ 400px
+                                            width: "clamp(200px, 25vw, 400px)",
+                                            height: "auto",
+                                        }}
+                                    />
+                                </div>
+                            </Link>
+                        </div>
 
                         {/* Column 2: النصوص (تبقى على اليمين في الترتيب) */}
                         <div className="md:col-span-8 flex flex-col items-center md:items-start text-center md:text-right space-y-6 md:space-y-8">
@@ -92,7 +92,7 @@ export default function LandingPage() {
                                 </Link>
 
                                 <Link
-                                    href="#services"
+                                    href={route("services")} // تأكد من استخدام route() إذا كنت تستخدم Ziggy
                                     className="flex items-center justify-center border-2 border-white/20 text-white px-10 py-4 rounded-xl text-lg font-bold tracking-widest uppercase transition-all duration-300 min-w-[200px] hover:border-accent-gold/60 hover:bg-accent-gold/10 hover:text-accent-gold hover:shadow-[0_0_20px_rgba(197,160,89,0.2)]"
                                 >
                                     اكتشف خدماتنا
