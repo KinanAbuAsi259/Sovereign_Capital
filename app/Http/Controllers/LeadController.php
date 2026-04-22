@@ -18,20 +18,16 @@ class LeadController extends Controller
     public function store(Request $request)
     {
         Log::info('📥 وصل طلب جديد إلى السيرفر في تمام الساعة: '.now());
-        $phone = str_replace([' ', '-', '(', ')'], '', $request->phone);
+        // 1. تنظيف الرقم من المسافات والرموز (نحتفظ بالأرقام وعلامة + فقط)
+$phoneBody = preg_replace('/[^\d]/', '', $request->phone);
 
-// 2. إذا كان الرقم يبدأ بـ 0، استبدله برمز النداء (مثال للرمز السوري أو السعودي)
-if (str_starts_with($phone, '0')) {
-    // افترضنا هنا رمز النداء +963، يمكنك تغييره حسب دولتك
-    $phone = '+963' . substr($phone, 1); 
-} 
-// 3. إذا بدأ الرقم مباشرة بدون 0 وبدون +
-elseif (!str_starts_with($phone, '+')) {
-    $phone = '+963' . $phone;
-}
+// 2. دمج رمز الدولة مع الرقم قبل التحقق لضمان فحص الرقم الكامل
+// ملاحظة: تأكدنا هنا من حذف أي أصفار في بداية الرقم المدخل
+$fullPhone = $request->country_code . ltrim($phoneBody, '0');
 
-// 4. دمج الرقم المعدل في الطلب ليتم فحصه في القاعدة
-$request->merge(['phone' => $phone]);
+// 3. تحديث الطلب بالرقم الكامل قبل البدء بالتحقق
+$request->merge(['phone' => $fullPhone]);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
            'phone' => [
@@ -61,25 +57,16 @@ $request->merge(['phone' => $phone]);
     'phone.required'  => 'رقم الهاتف ضروري لنتمكن من التواصل معك.',
     'budget.required' => 'يرجى تحديد الميزانية المتوقعة للاستثمار.',
             ]);
-        $validated['phone'] = $validated['country_code'].$validated['phone'];
+        // $validated['phone'] = $validated['country_code'].$validated['phone'];
 
         // إزالة country_code لأنه غير موجود في جدول قاعدة البيانات
-        unset($validated['country_code']);
+        // unset($validated['country_code']);
 
-        // Lead::create(array_merge($validated, ['status' => 'pending']));
-        $lead = Lead::firstOrCreate(
-            ['phone' => $validated['phone'], 'status' => 'لم يتم التواصل'],
-            array_merge($validated, ['status' => 'لم يتم التواصل'])
-        );
-        //     if ($request->has('uploaded_media_paths')) {
-        //     foreach ($request->uploaded_media_paths as $tempPath) {
-        //         $newPath = str_replace('temp_uploads', 'owner_assets/' . $lead->id, $tempPath);
-        //         Storage::disk('public')->move($tempPath, $newPath);
-
-        //         // تسجيل الملف في قاعدة البيانات (جدول الميديا الخاص بك)
-        //         $lead->media()->create(['path' => $newPath]);
-        //     }
-        // }
+        // $lead = Lead::firstOrCreate(
+        //     ['phone' => $validated['phone'], 'status' => 'لم يتم التواصل'],
+        //     array_merge($validated, ['status' => 'لم يتم التواصل'])
+        // );
+       Lead::create(array_merge($validated, ['status' => 'لم يتم التواصل']));
 
         return redirect()->route('landing');
     }

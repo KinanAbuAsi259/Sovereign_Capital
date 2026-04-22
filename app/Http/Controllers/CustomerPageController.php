@@ -17,20 +17,15 @@ class CustomerPageController extends Controller
     // CustomerPageController.php
     public function store(Request $request)
     {
-         $phone = str_replace([' ', '-', '(', ')'], '', $request->phone);
+        $phoneBody = preg_replace('/[^\d]/', '', $request->phone);
 
-// 2. إذا كان الرقم يبدأ بـ 0، استبدله برمز النداء (مثال للرمز السوري أو السعودي)
-if (str_starts_with($phone, '0')) {
-    // افترضنا هنا رمز النداء +963، يمكنك تغييره حسب دولتك
-    $phone = '+963' . substr($phone, 1); 
-} 
-// 3. إذا بدأ الرقم مباشرة بدون 0 وبدون +
-elseif (!str_starts_with($phone, '+')) {
-    $phone = '+963' . $phone;
-}
+// 2. دمج رمز الدولة مع الرقم قبل التحقق لضمان فحص الرقم الكامل
+// ملاحظة: تأكدنا هنا من حذف أي أصفار في بداية الرقم المدخل
+$fullPhone = $request->country_code . ltrim($phoneBody, '0');
 
-// 4. دمج الرقم المعدل في الطلب ليتم فحصه في القاعدة
-$request->merge(['phone' => $phone]);
+// 3. تحديث الطلب بالرقم الكامل قبل البدء بالتحقق
+$request->merge(['phone' => $fullPhone]);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
              'phone' => [
@@ -38,7 +33,7 @@ $request->merge(['phone' => $phone]);
         'regex:/^([0-9\s\-\+\(\)]*)$/', // يقبل الأرقام، الزائد، والمسافات
         'min:7',
         'max:20',
-        'unique:Leads,phone', 
+        'unique:customer_requests,phone', 
     ],
     'country_code' => 'required|string',
     'email' => 'nullable|email:rfc,dns|unique:users,email',
@@ -64,7 +59,7 @@ $request->merge(['phone' => $phone]);
             $validated['property_type'] = $validated['other_property_type'];
         }
         // else {
-        $validated['phone'] = $validated['country_code'].$validated['phone'];
+        // $validated['phone'] = $validated['country_code'].$validated['phone'];
 
         // إزالة country_code لأنه غير موجود في جدول قاعدة البيانات
         unset($validated['country_code']);
@@ -73,11 +68,13 @@ $request->merge(['phone' => $phone]);
         // }
         // 2. الحفظ في قاعدة البيانات
         // تأكد أن الموديل الخاص بك (مثلاً PropertyRequest) يحتوي على property_type في مصفوفة $fillable
-        CustomerRequest::create($validated);
-        CustomerRequest::firstOrCreate(
-            ['phone' => $validated['phone'], 'name' => $request->name, 'status' => 'لم يتم التواصل'],
-            array_merge($validated, ['status' => 'لم يتم التواصل'])
-        );
+        // CustomerRequest::create($validated);
+        // CustomerRequest::firstOrCreate(
+        //     ['phone' => $validated['phone'], 'name' => $request->name, 'status' => 'لم يتم التواصل'],
+        //     array_merge($validated, ['status' => 'لم يتم التواصل'])
+        // );
+        CustomerRequest::create(array_merge($validated, ['status' => 'لم يتم التواصل']));
+
 
         return redirect()->route('landing');
         // return redirect()->back()->with('success', 'تم استلام طلب البحث عن عقارك بنجاح، فريقنا سيتواصل معك قريباً!');

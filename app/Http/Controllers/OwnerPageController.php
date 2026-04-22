@@ -24,20 +24,14 @@ class OwnerPageController extends Controller
      */
     public function store(Request $request)
     {
-         $phone = str_replace([' ', '-', '(', ')'], '', $request->phone);
+          $phoneBody = preg_replace('/[^\d]/', '', $request->phone);
 
-// 2. إذا كان الرقم يبدأ بـ 0، استبدله برمز النداء (مثال للرمز السوري أو السعودي)
-if (str_starts_with($phone, '0')) {
-    // افترضنا هنا رمز النداء +963، يمكنك تغييره حسب دولتك
-    $phone = '+963' . substr($phone, 1); 
-} 
-// 3. إذا بدأ الرقم مباشرة بدون 0 وبدون +
-elseif (!str_starts_with($phone, '+')) {
-    $phone = '+963' . $phone;
-}
+// 2. دمج رمز الدولة مع الرقم قبل التحقق لضمان فحص الرقم الكامل
+// ملاحظة: تأكدنا هنا من حذف أي أصفار في بداية الرقم المدخل
+$fullPhone = $request->country_code . ltrim($phoneBody, '0');
 
-// 4. دمج الرقم المعدل في الطلب ليتم فحصه في القاعدة
-$request->merge(['phone' => $phone]);
+// 3. تحديث الطلب بالرقم الكامل قبل البدء بالتحقق
+$request->merge(['phone' => $fullPhone]);
         // 1. التحقق من صحة البيانات
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -46,7 +40,7 @@ $request->merge(['phone' => $phone]);
         'regex:/^([0-9\s\-\+\(\)]*)$/', // يقبل الأرقام، الزائد، والمسافات
         'min:7',
         'max:20',
-        'unique:Leads,phone', 
+        'unique:owner_requests,phone', 
     ],
             'country_code' => 'required|string',
             'governorate' => 'required|string',
@@ -76,33 +70,17 @@ $request->merge(['phone' => $phone]);
 
         // 3. تنظيف المصفوفة من الحقل الزائد قبل الحفظ في قاعدة البيانات
         unset($validated['other_property_type']);
-        $validated['phone'] = $validated['country_code'] . $validated['phone'];
+        // $validated['phone'] = $validated['country_code'] . $validated['phone'];
     
     // إزالة country_code لأنه غير موجود في جدول قاعدة البيانات
     unset($validated['country_code']);
 
 
         // 4. الحفظ في جدول owner_requests
-        $ownerRequest = OwnerRequest::firstOrCreate(
-            ['phone' => $validated['phone'], 'location' => $request->location, 'status' => 'لم يتم التواصل'],
+        $ownerRequest = OwnerRequest::create(
             array_merge($validated, ['status' => 'لم يتم التواصل'])
         );
-        // 2. معالجة الملفات المرفوعة (صور وفيديوهات)
-        // if ($request->hasFile('media')) {
-        //     foreach ($request->file('media') as $file) {
-        //         $path = $file->store('owner_assets', 'public'); // حفظ في storage/app/public/owner_assets
-
-        //         // تحديد النوع بناءً على الامتداد
-        //         $extension = $file->getClientOriginalExtension();
-        //         $type = in_array($extension, ['mp4', 'mov']) ? 'video' : 'image';
-
-        //         OwnerRequestMedia::create([
-        //             'owner_request_id' => $ownerRequest->id,
-        //             'file_path' => $path,
-        //             'file_type' => $type,
-        //         ]);
-        //     }
-        // }
+       
         // داخل دالة store في OwnerPageController
 if ($request->has('uploaded_media_paths')) {
     foreach ($request->uploaded_media_paths as $tempPath) {

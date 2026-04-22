@@ -80,8 +80,12 @@ export default function Investor_page() {
 
     const submit = (e) => {
         e.preventDefault();
+        const fullPhone = data.country_code + data.phone.replace(/^0+/, "");
+
         console.log("🚀 تم الضغط على زر الإرسال الآن!");
         post(route("lead.store"), {
+            // ...data,
+            // phone: fullPhone,
             onError: (err) => {
                 // هنا يمكنك طباعة الأخطاء في الـ Console لتتأكد من وصولها
                 console.log("Server Errors:", err);
@@ -155,7 +159,6 @@ export default function Investor_page() {
                                 )}
                             </div>
 
-                            {/* حقل الهاتف يأخذ عمود واحد فقط */}
                             {/* حقل الهاتف مدمج مع رمز الدولة */}
                             <div className="space-y-2">
                                 <label className="text-slate-300 text-sm mr-2 font-bold">
