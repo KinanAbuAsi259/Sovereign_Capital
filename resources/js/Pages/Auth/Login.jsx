@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Head, useForm, usePage, Link } from "@inertiajs/react";
 import toast, { Toaster } from "react-hot-toast";
+import React, { useState } from "react";
 
 export default function Login() {
     const { flash } = usePage().props;
@@ -46,6 +47,7 @@ export default function Login() {
         { code: "+33", label: "🇫🇷 FR", name: "فرنسا" },
         { code: "other", label: "🌐 أخرى", name: "دولة أخرى" }, // إضافة خيار أخرى
     ];
+    const [showPassword, setShowPassword] = useState(false); // احذف كلمة React. قبل useState
 
     return (
         <div
@@ -72,7 +74,7 @@ export default function Login() {
                         <div className="flex flex-row-reverse bg-white/5 border border-white/10 rounded-xl overflow-hidden focus-within:border-accent-gold transition-all">
                             {isPhone && (
                                 <select
-                                    className="bg-background-dark/80 border-0 border-l border-white/10 text-white px-2 outline-none text-xs"
+                                    className="bg-background-dark/80 border-0 border-l border-white/10 text-white px-2 outline-none text-[10px] sm:text-xs"
                                     value={data.country_code}
                                     onChange={(e) =>
                                         setData("country_code", e.target.value)
@@ -91,7 +93,13 @@ export default function Login() {
                             )}
                             <input
                                 type="text"
-                                className="flex-1 bg-transparent border-0 text-white p-4 outline-none text-right"
+                                /* شرح التعديل: 
+                   1. استخدمنا dir="ltr" لإجبار الأرقام والبريد على البقاء من اليسار لليمين.
+                   2. استخدمنا text-left لمحاذاة النص لليسار ليتناسب مع dir="ltr".
+                   3. placeholder-right لإبقاء الكلمة الإرشادية بالعربية على اليمين.
+                */
+                                dir="ltr"
+                                className="flex-1 bg-transparent border-0 text-white p-4 outline-none text-left placeholder:text-right"
                                 placeholder="رقم الهاتف أو البريد"
                                 value={data.login}
                                 onChange={(e) =>
@@ -100,31 +108,45 @@ export default function Login() {
                             />
                         </div>
                         {errors.login && (
-                            <p className="text-red-500 text-xs mt-2 pr-2">
+                            <p className="text-red-500 text-xs mt-2 pr-2 font-bold animate-pulse">
                                 {errors.login}
-                                {/* <pre className="text-red-500">{JSON.stringify(errors, null, 2)}</pre> */}
                             </p>
                         )}
                     </div>
 
-                    {/* حقل كلمة المرور */}
+                    {/* حقل كلمة المرور مع أيقونة المشاهدة */}
                     <div className="text-right">
                         <label className="text-slate-300 text-sm mr-2 mb-2 block font-bold">
                             كلمة المرور
                         </label>
-                        <input
-                            type="password"
-                            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-accent-gold outline-none text-right transition-all"
-                            placeholder="••••••••"
-                            value={data.password}
-                            onChange={(e) =>
-                                setData("password", e.target.value)
-                            }
-                        />
+                        <div className="relative">
+                            <input
+                                /* شرح التعديل: تغيير النوع ديناميكياً وإضافة dir="ltr" لمنع تكسر النقاط */
+                                type={showPassword ? "text" : "password"}
+                                dir="ltr"
+                                className="w-full bg-white/5 border border-white/10 rounded-xl p-4 pl-12 text-white focus:border-accent-gold outline-none text-left placeholder:text-right transition-all"
+                                placeholder="••••••••"
+                                value={data.password}
+                                onChange={(e) =>
+                                    setData("password", e.target.value)
+                                }
+                            />
+                            {/* أيقونة العين */}
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-accent-gold transition-colors"
+                            >
+                                <span className="material-symbols-outlined text-xl">
+                                    {showPassword
+                                        ? "visibility"
+                                        : "visibility_off"}
+                                </span>
+                            </button>
+                        </div>
                         {errors.password && (
-                            <p className="text-red-500 text-xs mt-2 pr-2">
+                            <p className="text-red-500 text-xs mt-2 pr-2 font-bold animate-pulse">
                                 {errors.password}
-                                {/* <pre className="text-red-500">{JSON.stringify(errors, null, 2)}</pre> */}
                             </p>
                         )}
                     </div>
@@ -132,14 +154,12 @@ export default function Login() {
                     <button
                         type="submit"
                         disabled={processing}
-                        className="w-full bg-accent text-[#0b1c2d] font-black py-4 rounded-xl hover:bg-white transition-all shadow-lg shadow-accent-gold/20"
+                        className="w-full bg-accent text-[#0b1c2d] font-black py-4 rounded-2xl transition-all duration-300 uppercase tracking-widest text-sm shadow-xl hover:opacity-90 disabled:opacity-70 justify-center gap-3 inline-flex items-center"
                     >
                         {processing ? "جاري التحقق..." : "تسجيل الدخول"}
                     </button>
-
-                    
                 </form>
-                 {/* زر العودة الذكي */}
+                {/* زر العودة الذكي */}
                 <div className="mt-8 text-center">
                     <Link
                         href="/"

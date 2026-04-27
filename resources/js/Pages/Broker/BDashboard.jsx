@@ -269,6 +269,7 @@ export default function BDashboard({
     const [selectedMedia, setSelectedMedia] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const {
         data: noteData,
         setData: setNoteData,
@@ -622,22 +623,48 @@ export default function BDashboard({
 
                                     {/* كلمة المرور */}
                                     <div className="space-y-2">
-                                        <label className="text-white/40 text-[10px] font-black mr-2 uppercase">
+                                        <label className="text-white/40 text-[10px] font-black mr-2 uppercase block">
                                             كلمة المرور
                                         </label>
-                                        <input
-                                            type="password"
-                                            placeholder="••••••••"
-                                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white text-left focus:border-[#d4af37] outline-none transition-all"
-                                            value={addBrokerForm.data.password}
-                                            onChange={(e) =>
-                                                addBrokerForm.setData(
-                                                    "password",
-                                                    e.target.value,
-                                                )
-                                            }
-                                            required
-                                        />
+                                        <div className="relative">
+                                            <input
+                                                /* شرح التعديل: تغيير النوع بناءً على الحالة وdir="ltr" لمنع تكسر النقاط */
+                                                type={
+                                                    showPassword
+                                                        ? "text"
+                                                        : "password"
+                                                }
+                                                dir="ltr"
+                                                placeholder="••••••••"
+                                                className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 pl-12 text-white text-left focus:border-[#d4af37] outline-none transition-all placeholder:text-right"
+                                                value={
+                                                    addBrokerForm.data.password
+                                                }
+                                                onChange={(e) =>
+                                                    addBrokerForm.setData(
+                                                        "password",
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                required
+                                            />
+                                            {/* زر تبديل الرؤية - وضعناه داخل div الحقل باستخدام absolute */}
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    setShowPassword(
+                                                        !showPassword,
+                                                    )
+                                                }
+                                                className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-[#d4af37] transition-colors flex items-center"
+                                            >
+                                                <span className="material-symbols-outlined text-xl">
+                                                    {showPassword
+                                                        ? "visibility"
+                                                        : "visibility_off"}
+                                                </span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -664,7 +691,7 @@ export default function BDashboard({
                                                     )
                                                 }
                                                 className={`flex flex-col items-center gap-2 md:gap-3 p-3 md:p-4 rounded-xl md:rounded-2xl border transition-all duration-500
-                    ${addBrokerForm.data[`can_view_${f}`] ? "bg-[#d4af37]/10 border-[#d4af37] shadow-[0_0_20px_rgba(212,175,55,0.2)]" : "bg-white/5 border-white/5"}`}
+                                                ${addBrokerForm.data[`can_view_${f}`] ? "bg-[#d4af37]/10 border-[#d4af37] shadow-[0_0_20px_rgba(212,175,55,0.2)]" : "bg-white/5 border-white/5"}`}
                                             >
                                                 <span
                                                     className={`material-symbols-outlined text-xl md:text-2xl ${addBrokerForm.data[`can_view_${f}`] ? "text-[#d4af37]" : "text-white/20"}`}
