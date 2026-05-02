@@ -261,6 +261,22 @@ export default function Authenticated({
                                     إعدادات الحساب
                                 </span>
                             </Link>
+                            <Link
+                                href={route("admin.visitors")} // تأكد من تعريف هذا المسار في web.php
+                                className={`w-full flex items-center gap-4 p-4 rounded-xl transition-all text-right group ${
+                                    route().current("admin.visitors")
+                                        ? "bg-accent-gold/10 text-accent-gold border border-accent-gold/20"
+                                        : "text-slate-400 hover:bg-white/5 hover:text-white border border-transparent"
+                                }`}
+                            >
+                                <span className="material-symbols-outlined transition-transform group-hover:scale-110">
+                                    monitoring{" "}
+                                    {/* أيقونة تعبر عن المراقبة والبيانات */}
+                                </span>
+                                <span className="text-sm font-medium">
+                                    سجل الزوار والنشاط
+                                </span>
+                            </Link>
 
                             {/* خط فاصل قبل تسجيل الخروج */}
                             <div className="h-[1px] bg-white/5 my-6"></div>

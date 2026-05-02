@@ -77,8 +77,8 @@ export default function LandingPage() {
 
                             <p className="text-slate-200 text-lg md:text-1xl font-light leading-relaxed max-w-2xl opacity-90 tracking-wide">
                                 المنصة الأولى لاستقبال طلبات الشركات الاستثمارية
-                                والمستثمرين في الخارج. نفتح لك أبواب الاستثمار
-                                الآمن والمربح بفضل شبكة علاقاتنا الواسعة.
+                                والمستثمرين في الخارج، لنفتح لك أبواب الاستثمار
+                                الآمن والمربح بفضل شبكة علاقاتنا الواسعة
                             </p>
 
                             {/* الأزرار */}
@@ -183,7 +183,7 @@ export default function LandingPage() {
 
                     {/* ⭕️ تعديل تصغير الخط: تم تصغير خط العنوان الرئيسي ليكون أكثر رزانة (من text-4xl إلى text-3xl) */}
                     <h2 className="text-white text-2xl md:text-3xl font-black leading-tight drop-shadow-2xl max-w-xl">
-                        شبكة خبراء بخبرة تتجاوز{" "}
+                        شبكة وسطاء بخبرة تتجاوز{" "}
                         <span className="text-accent-gold">15 عاماً</span> في
                         الصفقات الكبرى
                     </h2>

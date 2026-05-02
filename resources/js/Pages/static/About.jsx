@@ -68,37 +68,34 @@ export default function About() {
                     </div>
 
                     {/* إحصائيات سريعة (أرقام ملكية) */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-12 border-y border-white/10">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-12 border-y border-white/10">
+                        {/* الخانة الأولى */}
                         <div className="text-center">
-                            <div className="text-3xl font-black text-white mb-1">
-                                +500
+                            <div className="text-3xl md:text-4xl font-black text-white mb-2">
+                                99.9%
                             </div>
-                            <div className="text-[10px] text-accent uppercase tracking-widest font-bold">
-                                مستثمر سيادي
-                            </div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-3xl font-black text-white mb-1">
-                                99%
-                            </div>
-                            <div className="text-[10px] text-accent uppercase tracking-widest font-bold">
+                            <div className="text-[10px] text-accent uppercase tracking-[0.2em] font-bold">
                                 معدل الأمان
                             </div>
                         </div>
-                        <div className="text-center">
-                            <div className="text-3xl font-black text-white mb-1">
-                                +1B
+
+                        {/* الخانة الثانية - الخبرة */}
+                        <div className="text-center border-y md:border-y-0 md:border-x border-white/5 py-6 md:py-0">
+                            <div className="text-3xl md:text-4xl font-black text-white mb-2">
+                                +15
                             </div>
-                            <div className="text-[10px] text-accent uppercase tracking-widest font-bold">
-                                أصول مدارة
+                            <div className="text-[10px] text-accent uppercase tracking-[0.2em] font-bold px-4">
+                                سنوات خبرة في الأسواق المالية
                             </div>
                         </div>
+
+                        {/* الخانة الثالثة */}
                         <div className="text-center">
-                            <div className="text-3xl font-black text-white mb-1">
+                            <div className="text-3xl md:text-4xl font-black text-white mb-2">
                                 24/7
                             </div>
-                            <div className="text-[10px] text-accent uppercase tracking-widest font-bold">
-                                دعم تقني
+                            <div className="text-[10px] text-accent uppercase tracking-[0.2em] font-bold">
+                                دعم تقني واحترافي
                             </div>
                         </div>
                     </div>

@@ -59,6 +59,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/notes/owner/{id}', [DashboardController::class, 'updateOwnerNote'])->name('admin.owner.note');
     Route::post('/admin/notes/investor/{id}', [DashboardController::class, 'updateInvestorNote'])->name('admin.investor.note');
     Route::post('/admin/notes/customer/{id}', [DashboardController::class, 'updateCustomerNote'])->name('admin.customer.note');
+    // داخل مجموعة الـ Admin Middleware
+    Route::get('/admin/visitors', function () {
+        return inertia('Admin/VisitorDataView', [
+            'visitors' => \App\Models\VisitorLog::latest()->take(100)->get(),
+        ]);
+    })->name('admin.visitors');
     Route::get('/broker/dashboard', [DashboardController::class, 'brokerIndex'])->name('broker.dashboard');
 
     // مسار تحديث الحالة

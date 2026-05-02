@@ -6,6 +6,7 @@ use App\Models\Lead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use Stevebauman\Location\Facades\Location;
 
 class LeadController extends Controller
 {
@@ -17,26 +18,37 @@ class LeadController extends Controller
 
     public function store(Request $request)
     {
+        //     $ip = $request->ip(); // الحصول على الـ IP
+        // $data = Location::get($ip); // استخراج التفاصيل (الدولة، المدينة، المنطقة)
+        // if ($data) {
+        //     // يمكنك الآن الوصول للبيانات:
+        //     $country = $data->countryName;
+        //     $city = $data->cityName;
+        //     $region = $data->regionName;
+        //     $latitude = $data->latitude;
+        //     $longitude = $data->longitude;
+        // }
+
         Log::info('📥 وصل طلب جديد إلى السيرفر في تمام الساعة: '.now());
         // 1. تنظيف الرقم من المسافات والرموز (نحتفظ بالأرقام وعلامة + فقط)
-$phoneBody = preg_replace('/[^\d]/', '', $request->phone);
+        $phoneBody = preg_replace('/[^\d]/', '', $request->phone);
 
-// 2. دمج رمز الدولة مع الرقم قبل التحقق لضمان فحص الرقم الكامل
-// ملاحظة: تأكدنا هنا من حذف أي أصفار في بداية الرقم المدخل
-$fullPhone = $request->country_code . ltrim($phoneBody, '0');
+        // 2. دمج رمز الدولة مع الرقم قبل التحقق لضمان فحص الرقم الكامل
+        // ملاحظة: تأكدنا هنا من حذف أي أصفار في بداية الرقم المدخل
+        $fullPhone = $request->country_code.ltrim($phoneBody, '0');
 
-// 3. تحديث الطلب بالرقم الكامل قبل البدء بالتحقق
-$request->merge(['phone' => $fullPhone]);
+        // 3. تحديث الطلب بالرقم الكامل قبل البدء بالتحقق
+        $request->merge(['phone' => $fullPhone]);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-           'phone' => [
-        'required',
-        'regex:/^([0-9\s\-\+\(\)]*)$/', // يقبل الأرقام، الزائد، والمسافات
-        'min:7',
-        'max:20',
-        'unique:leads,phone', 
-    ], 
+            'phone' => [
+                'required',
+                'regex:/^([0-9\s\-\+\(\)]*)$/', // يقبل الأرقام، الزائد، والمسافات
+                'min:7',
+                'max:20',
+                'unique:leads,phone',
+            ],
             'country_code' => 'required|string',
             'email' => 'nullable|email:rfc,dns|unique:users,email',
             'governorate' => 'required|string',
@@ -48,14 +60,14 @@ $request->merge(['phone' => $fullPhone]);
             'investment_goal' => 'required|string',
         ],
             [
-    'email.dns' => 'هذا البريد الإلكتروني غير موجود أو غير مفعل.',
-    'email.unique' => 'هذا البريد مسجل مسبقاً في نظامنا.',
-    'phone.regex' => 'صيغة رقم الهاتف خاطئة، يرجى إدخال أرقام فقط.',
-    'phone.unique' => 'هذا الرقم مسجل لدينا بطلب استثمار سابق.',
-    'phone.min' => 'رقم الهاتف قصير جداً.',
-    'name.required'   => 'يرجى إدخال الاسم الكامل لصاحب الطلب.',
-    'phone.required'  => 'رقم الهاتف ضروري لنتمكن من التواصل معك.',
-    'budget.required' => 'يرجى تحديد الميزانية المتوقعة للاستثمار.',
+                'email.dns' => 'هذا البريد الإلكتروني غير موجود أو غير مفعل.',
+                'email.unique' => 'هذا البريد مسجل مسبقاً في نظامنا.',
+                'phone.regex' => 'صيغة رقم الهاتف خاطئة، يرجى إدخال أرقام فقط.',
+                'phone.unique' => 'هذا الرقم مسجل لدينا بطلب استثمار سابق.',
+                'phone.min' => 'رقم الهاتف قصير جداً.',
+                'name.required' => 'يرجى إدخال الاسم الكامل لصاحب الطلب.',
+                'phone.required' => 'رقم الهاتف ضروري لنتمكن من التواصل معك.',
+                'budget.required' => 'يرجى تحديد الميزانية المتوقعة للاستثمار.',
             ]);
         // $validated['phone'] = $validated['country_code'].$validated['phone'];
 
@@ -66,7 +78,7 @@ $request->merge(['phone' => $fullPhone]);
         //     ['phone' => $validated['phone'], 'status' => 'لم يتم التواصل'],
         //     array_merge($validated, ['status' => 'لم يتم التواصل'])
         // );
-       Lead::create(array_merge($validated, ['status' => 'لم يتم التواصل']));
+        Lead::create(array_merge($validated, ['status' => 'لم يتم التواصل']));
 
         return redirect()->route('landing');
     }

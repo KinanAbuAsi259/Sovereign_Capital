@@ -15,6 +15,7 @@
         "laravel/tinker": "^2.8",
         "propaganistas/laravel-phone": "^5.3",
         "spatie/laravel-ray": "^1.43",
+        "stevebauman/location": "^7.6",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
