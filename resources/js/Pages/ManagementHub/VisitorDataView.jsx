@@ -1,8 +1,12 @@
 import React from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 
-export default function VisitorDataView({ auth, visitors }) {
+export default function VisitorDataView({
+    auth,
+    visitors,
+    totalVisitorsCount,
+}) {
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="سجل الزوار - التتبع السيادي" />
@@ -23,8 +27,9 @@ export default function VisitorDataView({ auth, visitors }) {
                             <div className="text-[10px] text-accent-gold uppercase tracking-widest text-white mb-1">
                                 إجمالي الزيارات
                             </div>
-                            <div className="text-2xl font-black text-white">
-                                {visitors.length}
+                            <div className="text-2xl text-white text-white">
+                                {totalVisitorsCount.toLocaleString()}{" "}
+                                {/* سيظهر الرقم كاملاً مثل 1,250 */}
                             </div>
                         </div>
                     </div>
@@ -53,7 +58,7 @@ export default function VisitorDataView({ auth, visitors }) {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-white/5">
-                                    {visitors.map((visitor) => (
+                                    {visitors.data.map((visitor) => (
                                         <tr
                                             key={visitor.id}
                                             className="hover:bg-white/[0.03] transition-all group duration-300"
@@ -142,6 +147,25 @@ export default function VisitorDataView({ auth, visitors }) {
                                     ))}
                                 </tbody>
                             </table>
+                        </div>
+                        {/* روابط التنقل بين الصفحات */}
+                        {/* نظام التنقل الملكي */}
+                        <div className="mt-10 flex flex-wrap justify-center items-center gap-3 pb-10">
+                            {visitors.links.map((link, index) => (
+                                <Link
+                                    key={index}
+                                    href={link.url}
+                                    // لتنظيف الكلمات مثل "Next" و "Previous" من أي رموز إضافية
+                                    dangerouslySetInnerHTML={{
+                                        __html: link.label,
+                                    }}
+                                    className={`px-5 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-300 border ${
+                                        link.active
+                                            ? "bg-gradient-to-r from-[#d4af37] to-[#f2d472] text-[#0b1c2d] border-transparent shadow-[0_0_20px_rgba(212,175,55,0.3)]"
+                                            : "bg-[#0b1c2d]/50 text-slate-400 border-white/10 hover:border-accent-gold/40 hover:text-white"
+                                    } ${!link.url ? "opacity-30 cursor-not-allowed hidden" : ""}`}
+                                />
+                            ))}
                         </div>
                     </div>
                 </div>

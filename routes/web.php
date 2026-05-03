@@ -60,9 +60,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/notes/investor/{id}', [DashboardController::class, 'updateInvestorNote'])->name('admin.investor.note');
     Route::post('/admin/notes/customer/{id}', [DashboardController::class, 'updateCustomerNote'])->name('admin.customer.note');
     // داخل مجموعة الـ Admin Middleware
-    Route::get('/admin/visitors', function () {
-        return inertia('Admin/VisitorDataView', [
-            'visitors' => \App\Models\VisitorLog::latest()->take(100)->get(),
+    Route::get('/ManagementHub/visitors', function () {
+        return Inertia::render('ManagementHub/VisitorDataView', [
+            'visitors' => \App\Models\VisitorLog::latest()->paginate(50),
+            'totalVisitorsCount' => \App\Models\VisitorLog::count(),
         ]);
     })->name('admin.visitors');
     Route::get('/broker/dashboard', [DashboardController::class, 'brokerIndex'])->name('broker.dashboard');
